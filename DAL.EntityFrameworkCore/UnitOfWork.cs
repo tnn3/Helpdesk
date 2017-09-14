@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Domain;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,15 @@ namespace DAL.EntityFrameworkCore
         where TContext : IDataContext
     {
         public IProjectTaskRepository ProjectTasks => GetCustomRepository<IProjectTaskRepository>();
+        public IChangeRepository Changes => GetCustomRepository<IChangeRepository>();
+        public ICustomFieldRepository CustomFields => GetCustomRepository<ICustomFieldRepository>();
+
+        public IRepository<Status> Statuses => GetEntityRepository<Status>();
+        public IRepository<Priority> Priorities => GetEntityRepository<Priority>();
+        public IRepository<UserTitle> UserTitles => GetEntityRepository<UserTitle>();
+        public IRepository<ChangeSet> ChangeSets => GetEntityRepository<ChangeSet>();
+        public IRepository<ApplicationUser> Users => GetEntityRepository<ApplicationUser>();
+        public IRepository<CustomFieldValue> CustomFieldValues => GetEntityRepository<CustomFieldValue>();
 
         private DbContext _context;
         private readonly IRepositoryProvider _repositoryProvider;

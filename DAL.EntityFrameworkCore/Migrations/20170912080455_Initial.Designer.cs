@@ -12,7 +12,7 @@ using System;
 namespace DAL.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170912074724_Initial")]
+    [Migration("20170912080455_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,11 +185,15 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<int?>("PriorityId");
 
+                    b.Property<int?>("StatusId");
+
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PriorityId");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("ProjectTasks");
                 });
@@ -353,7 +357,7 @@ namespace DAL.EntityFrameworkCore.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.ProjectTask", "ProjectTask")
-                        .WithMany()
+                        .WithMany("ChangeSets")
                         .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
@@ -366,16 +370,21 @@ namespace DAL.EntityFrameworkCore.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.ProjectTask", "ProjectTask")
-                        .WithMany()
+                        .WithMany("Type")
                         .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Domain.ProjectTask", b =>
                 {
-                    b.HasOne("Domain.Priority")
+                    b.HasOne("Domain.Priority", "Priority")
                         .WithMany("ProjectTasks")
                         .HasForeignKey("PriorityId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Domain;
 
 namespace Interfaces.Base
 {
@@ -11,5 +12,13 @@ namespace Interfaces.Base
         TRepository GetCustomRepository<TRepository>() where TRepository : class;
 
         IProjectTaskRepository ProjectTasks { get; }
+        IChangeRepository Changes { get; }
+        ICustomFieldRepository CustomFields { get; }
+        IRepository<Status> Statuses { get; }
+        IRepository<ApplicationUser> Users { get; }
+        IRepository<ChangeSet> ChangeSets { get; }
+        IRepository<CustomFieldValue> CustomFieldValues { get; }
+        IRepository<Priority> Priorities { get; }
+        IRepository<UserTitle> UserTitles { get; }
     }
 }

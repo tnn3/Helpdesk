@@ -184,11 +184,15 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<int?>("PriorityId");
 
+                    b.Property<int?>("StatusId");
+
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PriorityId");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("ProjectTasks");
                 });
@@ -352,7 +356,7 @@ namespace DAL.EntityFrameworkCore.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.ProjectTask", "ProjectTask")
-                        .WithMany()
+                        .WithMany("ChangeSets")
                         .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
@@ -365,16 +369,21 @@ namespace DAL.EntityFrameworkCore.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.ProjectTask", "ProjectTask")
-                        .WithMany()
+                        .WithMany("Type")
                         .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Domain.ProjectTask", b =>
                 {
-                    b.HasOne("Domain.Priority")
+                    b.HasOne("Domain.Priority", "Priority")
                         .WithMany("ProjectTasks")
                         .HasForeignKey("PriorityId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

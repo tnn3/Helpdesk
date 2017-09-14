@@ -1,28 +1,32 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DAL.EntityFrameworkCore;
 using Domain;
 
-namespace WebApplication.Controllers
+namespace WebApplication.Areas.Admin.Controllers
 {
-    public class ProjectTasksController : Controller
+    [Area("Admin")]
+    public class StatusController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ProjectTasksController(ApplicationDbContext context)
+        public StatusController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: ProjectTasks
+        // GET: Admin/Status
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ProjectTasks.ToListAsync());
+            return View(await _context.Statuses.ToListAsync());
         }
 
-        // GET: ProjectTasks/Details/5
+        // GET: Admin/Status/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -30,39 +34,39 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _context.ProjectTasks
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (projectTask == null)
+            var status = await _context.Statuses
+                .SingleOrDefaultAsync(m => m.StatusId == id);
+            if (status == null)
             {
                 return NotFound();
             }
 
-            return View(projectTask);
+            return View(status);
         }
 
-        // GET: ProjectTasks/Create
+        // GET: Admin/Status/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: ProjectTasks/Create
+        // POST: Admin/Status/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description")] ProjectTask projectTask)
+        public async Task<IActionResult> Create([Bind("StatusId,Name")] Status status)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(projectTask);
+                _context.Add(status);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(projectTask);
+            return View(status);
         }
 
-        // GET: ProjectTasks/Edit/5
+        // GET: Admin/Status/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -70,22 +74,22 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _context.ProjectTasks.SingleOrDefaultAsync(m => m.Id == id);
-            if (projectTask == null)
+            var status = await _context.Statuses.SingleOrDefaultAsync(m => m.StatusId == id);
+            if (status == null)
             {
                 return NotFound();
             }
-            return View(projectTask);
+            return View(status);
         }
 
-        // POST: ProjectTasks/Edit/5
+        // POST: Admin/Status/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description")] ProjectTask projectTask)
+        public async Task<IActionResult> Edit(int id, [Bind("StatusId,Name")] Status status)
         {
-            if (id != projectTask.Id)
+            if (id != status.StatusId)
             {
                 return NotFound();
             }
@@ -94,12 +98,12 @@ namespace WebApplication.Controllers
             {
                 try
                 {
-                    _context.Update(projectTask);
+                    _context.Update(status);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectTaskExists(projectTask.Id))
+                    if (!StatusExists(status.StatusId))
                     {
                         return NotFound();
                     }
@@ -110,10 +114,10 @@ namespace WebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(projectTask);
+            return View(status);
         }
 
-        // GET: ProjectTasks/Delete/5
+        // GET: Admin/Status/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -121,30 +125,30 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _context.ProjectTasks
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (projectTask == null)
+            var status = await _context.Statuses
+                .SingleOrDefaultAsync(m => m.StatusId == id);
+            if (status == null)
             {
                 return NotFound();
             }
 
-            return View(projectTask);
+            return View(status);
         }
 
-        // POST: ProjectTasks/Delete/5
+        // POST: Admin/Status/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var projectTask = await _context.ProjectTasks.SingleOrDefaultAsync(m => m.Id == id);
-            _context.ProjectTasks.Remove(projectTask);
+            var status = await _context.Statuses.SingleOrDefaultAsync(m => m.StatusId == id);
+            _context.Statuses.Remove(status);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProjectTaskExists(int id)
+        private bool StatusExists(int id)
         {
-            return _context.ProjectTasks.Any(e => e.Id == id);
+            return _context.Statuses.Any(e => e.StatusId == id);
         }
     }
 }

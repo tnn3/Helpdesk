@@ -108,6 +108,7 @@ namespace DAL.EntityFrameworkCore.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     PriorityId = table.Column<int>(type: "INTEGER", nullable: true),
+                    StatusId = table.Column<int>(type: "INTEGER", nullable: true),
                     Title = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -118,6 +119,12 @@ namespace DAL.EntityFrameworkCore.Migrations
                         column: x => x.PriorityId,
                         principalTable: "Priorities",
                         principalColumn: "PriorityId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProjectTasks_Statuses_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "Statuses",
+                        principalColumn: "StatusId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -386,6 +393,11 @@ namespace DAL.EntityFrameworkCore.Migrations
                 name: "IX_ProjectTasks_PriorityId",
                 table: "ProjectTasks",
                 column: "PriorityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectTasks_StatusId",
+                table: "ProjectTasks",
+                column: "StatusId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -412,9 +424,6 @@ namespace DAL.EntityFrameworkCore.Migrations
                 name: "CustomFieldValues");
 
             migrationBuilder.DropTable(
-                name: "Statuses");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -434,6 +443,9 @@ namespace DAL.EntityFrameworkCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "Priorities");
+
+            migrationBuilder.DropTable(
+                name: "Statuses");
         }
     }
 }

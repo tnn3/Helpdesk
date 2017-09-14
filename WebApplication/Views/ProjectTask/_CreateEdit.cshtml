@@ -1,0 +1,13 @@
+﻿@model WebApplication.ViewModels.ProjectTaskCreateEditViewModel
+
+<div class="form-group">
+    <label asp-for="ProjectTask.Title" class="control-label"></label>
+    <input asp-for="ProjectTask.Title" class="form-control" />
+    <span asp-validation-for="ProjectTask.Title" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ProjectTask.Description" class="control-label"></label>
+    <input asp-for="ProjectTask.Description" class="form-control" />
+    <span asp-validation-for="ProjectTask.Description" class="text-danger"></span>
+</div>
+

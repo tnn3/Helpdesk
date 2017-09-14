@@ -29,7 +29,8 @@ namespace DAL.EntityFrameworkCore.Helpers
             return new Dictionary<Type, Func<IDataContext, object>>
             {
                 {typeof(IProjectTaskRepository), dbContext => new ProjectTaskRepository(dbContext)},
-
+                {typeof(ICustomFieldRepository), dbContext => new CustomFieldRepository(dbContext)},
+                {typeof(IChangeRepository), dbContext => new ChangeRepository(dbContext)}
             };
         }
 
