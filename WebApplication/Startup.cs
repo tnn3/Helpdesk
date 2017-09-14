@@ -6,7 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApplication.Models;
 using DAL.EntityFrameworkCore;
+using DAL.EntityFrameworkCore.Extensions;
 using Domain;
+using Interfaces.Base;
+using Microsoft.AspNetCore.HttpOverrides;
 using WebApplication.Services;
 
 namespace WebApplication
@@ -27,6 +30,10 @@ namespace WebApplication
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
+
+            services.AddScoped<IDataContext, ApplicationDbContext>();
+            services.AddScoped<IUnitOfWork, ApplicationUnitOfWork<IDataContext>>();
+
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -52,7 +59,20 @@ namespace WebApplication
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            var dataContext = app.ApplicationServices.GetService<ApplicationDbContext>();
+            if (dataContext != null)
+            {
+                dataContext.Database.Migrate();
+
+                dataContext.EnsureSeedData();
+            }
+
             app.UseStaticFiles();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseAuthentication();
 
