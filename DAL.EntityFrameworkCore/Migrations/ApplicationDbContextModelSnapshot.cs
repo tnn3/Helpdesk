@@ -18,7 +18,8 @@ namespace DAL.EntityFrameworkCore.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
+                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Domain.ApplicationUser", b =>
                 {
@@ -67,7 +68,8 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex("TitleId");
 
@@ -182,9 +184,9 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int?>("PriorityId");
+                    b.Property<int>("PriorityId");
 
-                    b.Property<int?>("StatusId");
+                    b.Property<int>("StatusId");
 
                     b.Property<string>("Title");
 
@@ -243,7 +245,8 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
                 });

@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WebApplication.Models;
 using DAL.EntityFrameworkCore;
 using DAL.EntityFrameworkCore.Extensions;
+using DAL.EntityFrameworkCore.Helpers;
 using Domain;
 using Interfaces.Base;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -31,6 +32,9 @@ namespace WebApplication
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
 
+            services.AddScoped<IRepositoryProvider, EFRepositoryProvider<IDataContext>>();
+            services.AddSingleton<IRepositoryFactory, EFRepositoryFactory>();
+
             services.AddScoped<IDataContext, ApplicationDbContext>();
             services.AddScoped<IUnitOfWork, ApplicationUnitOfWork<IDataContext>>();
 
@@ -46,7 +50,7 @@ namespace WebApplication
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext dataContext)
         {
             if (env.IsDevelopment())
             {
@@ -59,7 +63,6 @@ namespace WebApplication
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            var dataContext = app.ApplicationServices.GetService<ApplicationDbContext>();
             if (dataContext != null)
             {
                 dataContext.Database.Migrate();
