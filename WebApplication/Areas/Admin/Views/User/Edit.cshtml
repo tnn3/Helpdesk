@@ -1,0 +1,32 @@
+﻿@model Domain.ApplicationUser
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+    @Html.HiddenFor(model => model.Id)
+
+
+    <fieldset class="form-horizontal">
+        <legend>Edit a user.</legend>
+        <div class="control-group">
+            @Html.LabelFor(m => m.UserName, new { @class = "control-label" })
+            <div class="controls">
+                @Html.TextBoxFor(m => m.UserName)
+            </div>
+        </div>
+        <h4>Modify Role for User</h4>
+        <hr />
+        @Html.DropDownList("roleId", "No Roles")
+        <div class="form-actions no-color">
+            <input type="submit" value="Edit" class="btn" />
+        </div>
+    </fieldset>
+}

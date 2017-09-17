@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WebApplication.Models;
 using DAL.EntityFrameworkCore;
 using DAL.EntityFrameworkCore.Extensions;
 using DAL.EntityFrameworkCore.Helpers;
@@ -40,6 +39,8 @@ namespace WebApplication
             services.AddScoped<IDataContext, ApplicationDbContext>();
             services.AddScoped<IUnitOfWork, ApplicationUnitOfWork<IDataContext>>();
 
+            // Add Database Initializer
+            services.AddScoped<IDbInitializer, DbInitializer>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -49,10 +50,11 @@ namespace WebApplication
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext dataContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -65,12 +67,8 @@ namespace WebApplication
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            if (dataContext != null)
-            {
-                dataContext.Database.Migrate();
-
-                dataContext.EnsureSeedData();
-            }
+            dbInitializer.Migrate();
+            dbInitializer.Seed();
 
             app.UseStaticFiles();
 
@@ -90,6 +88,7 @@ namespace WebApplication
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

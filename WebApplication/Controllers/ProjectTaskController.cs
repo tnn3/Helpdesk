@@ -169,6 +169,7 @@ namespace WebApplication.Controllers
         {
             var projectTask = await _uow.ProjectTasks.FindAsync(id);
             _uow.ProjectTasks.Remove(projectTask);
+            await _uow.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

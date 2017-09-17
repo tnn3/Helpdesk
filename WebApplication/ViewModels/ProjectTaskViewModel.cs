@@ -7,10 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebApplication.ViewModels
 {
-    public class ProjectTaskViewModel
-    {
-    }
-
     public class ProjectTaskCreateEditViewModel
     {
         public ProjectTask ProjectTask { get; set; }

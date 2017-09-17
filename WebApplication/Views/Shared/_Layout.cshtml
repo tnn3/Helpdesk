@@ -31,13 +31,20 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="ProjectTask" asp-action="Index">Tasks</a></li>
-                    <li><a asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index">Users</a></li>
-                    <li><a asp-area="Admin" asp-controller="CustomField" asp-action="Index">Custom Fields</a></li>
-                    <li><a asp-area="Admin" asp-controller="Priority" asp-action="Index">Priorities</a></li>
-                    <li><a asp-area="Admin" asp-controller="Status" asp-action="Index">Statuses</a></li>
-                    <li><a asp-area="Admin" asp-controller="UserTitle" asp-action="Index">Titles</a></li>
-                </ul>
+                    @*@if (User.Identity.IsAuthenticated)
+                    {*@
+                        <li><a asp-area="" asp-controller="ProjectTask" asp-action="Index">Tasks</a></li>
+                        @*if (User.IsInRole("Admin"))
+                        {*@
+                            <li><a asp-area="Admin" asp-controller="CustomField" asp-action="Index">Custom Fields</a></li>
+                            <li><a asp-area="Admin" asp-controller="Priority" asp-action="Index">Priorities</a></li>
+                            <li><a asp-area="Admin" asp-controller="Status" asp-action="Index">Statuses</a></li>
+                            <li><a asp-area="Admin" asp-controller="UserTitle" asp-action="Index">Titles</a></li>
+                            <li><a asp-area="Admin" asp-controller="Role" asp-action="Index">Roles</a></li>
+                            <li><a asp-area="Admin" asp-controller="User" asp-action="Index">Users</a></li>
+                        @*}
+                    }*@
+                </ul >
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
