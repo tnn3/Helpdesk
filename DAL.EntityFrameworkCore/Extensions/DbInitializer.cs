@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Interfaces.Base;
@@ -56,6 +57,8 @@ namespace DAL.EntityFrameworkCore.Extensions
                 _context.SaveChanges();
             }
 
+            SeedUsers().Wait();
+
             if (!_context.ProjectTasks.Any())
             {
                 _context.ProjectTasks.Add(new ProjectTask
@@ -71,11 +74,33 @@ namespace DAL.EntityFrameworkCore.Extensions
                     ComponentPrice = 25.25,
                     PaidWork = true,
                     Price = 45.25,
+                    AssignedTo = _context.AppUsers.First(),
+                    CreatedAt = DateTime.Now,
+                    ModifiedAt = DateTime.Now,
+                    CreatedBy = _context.AppUsers.First(),
+                    ModifiedBy = _context.AppUsers.First()
+                });
+                _context.ProjectTasks.Add(new ProjectTask
+                {
+                    Description = "Client came and said \"clean mah pc\"",
+                    Title = "HP tolmupuhastus",
+                    Priority = _context.Priorities.First(),
+                    Status = _context.Statuses.First(),
+                    AmountDone = 0,
+                    ClientEmail = "jefi@jeri.ee",
+                    ClientName = "Jefi Jeri",
+                    ClientPhone = "99554246",
+                    ComponentPrice = 0,
+                    PaidWork = true,
+                    Price = 15,
+                    AssignedTo = null,
+                    CreatedAt = DateTime.Now,
+                    ModifiedAt = DateTime.Now,
+                    CreatedBy = _context.AppUsers.First(),
+                    ModifiedBy = _context.AppUsers.First()
                 });
                 _context.SaveChanges();
             }
-
-            SeedUsers().Wait();
         }
 
         private async Task SeedUsers()

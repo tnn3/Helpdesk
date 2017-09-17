@@ -22,6 +22,8 @@ namespace DAL.EntityFrameworkCore
         public IRepository<ChangeSet> ChangeSets => GetEntityRepository<ChangeSet>();
         public IRepository<ApplicationUser> Users => GetEntityRepository<ApplicationUser>();
         public IRepository<CustomFieldValue> CustomFieldValues => GetEntityRepository<CustomFieldValue>();
+        public IRepository<CustomFieldInTasks> CustomFieldInTasks => GetEntityRepository<CustomFieldInTasks>();
+        public IRepository<TaskUsers> TaskUsers => GetEntityRepository<TaskUsers>();
 
         private DbContext _context;
         private readonly IRepositoryProvider _repositoryProvider;

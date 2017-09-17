@@ -2,7 +2,7 @@
 
 namespace Domain
 {
-    public class ProjectTask
+    public class ProjectTask : BaseEntity
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -15,6 +15,8 @@ namespace Domain
         public string ClientPhone { get; set; }
         public string ClientEmail { get; set; }
 
+        public string AssignedToId { get; set; }
+        public ApplicationUser AssignedTo { get; set; }
         public int PriorityId { get; set; }
         public Priority Priority { get; set; }
         public int StatusId { get; set; }

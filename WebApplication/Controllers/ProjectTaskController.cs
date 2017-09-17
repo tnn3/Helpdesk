@@ -20,7 +20,7 @@ namespace WebApplication.Controllers
         // GET: ProjectTask
         public async Task<IActionResult> Index()
         {
-            return View(await _uow.ProjectTasks.AllAsync());
+            return View(await _uow.ProjectTasks.AllWithReferencesAsync());
         }
 
         // GET: ProjectTask/Details/5
@@ -31,8 +31,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _uow.ProjectTasks
-                .FindAsync(id);
+            var projectTask = await _uow.ProjectTasks.FindWithReferencesAsync(id.Value);
             if (projectTask == null)
             {
                 return NotFound();
@@ -134,10 +133,7 @@ namespace WebApplication.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -152,8 +148,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _uow.ProjectTasks
-                .FindAsync(id);
+            var projectTask = await _uow.ProjectTasks.FindAsync(id);
             if (projectTask == null)
             {
                 return NotFound();

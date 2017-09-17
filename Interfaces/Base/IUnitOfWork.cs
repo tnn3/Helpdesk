@@ -20,5 +20,7 @@ namespace Interfaces.Base
         IRepository<CustomFieldValue> CustomFieldValues { get; }
         IRepository<Priority> Priorities { get; }
         IRepository<UserTitle> UserTitles { get; }
+        IRepository<CustomFieldInTasks> CustomFieldInTasks { get; }
+        IRepository<TaskUsers> TaskUsers { get; }
     }
 }
