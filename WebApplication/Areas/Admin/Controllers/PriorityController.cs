@@ -35,7 +35,7 @@ namespace WebApplication.Areas.Admin.Controllers
             }
 
             var priority = await _context.Priorities
-                .SingleOrDefaultAsync(m => m.PriorityId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (priority == null)
             {
                 return NotFound();
@@ -74,7 +74,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var priority = await _context.Priorities.SingleOrDefaultAsync(m => m.PriorityId == id);
+            var priority = await _context.Priorities.SingleOrDefaultAsync(m => m.Id == id);
             if (priority == null)
             {
                 return NotFound();
@@ -89,7 +89,7 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("PriorityId,Name")] Priority priority)
         {
-            if (id != priority.PriorityId)
+            if (id != priority.Id)
             {
                 return NotFound();
             }
@@ -103,7 +103,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PriorityExists(priority.PriorityId))
+                    if (!PriorityExists(priority.Id))
                     {
                         return NotFound();
                     }
@@ -126,7 +126,7 @@ namespace WebApplication.Areas.Admin.Controllers
             }
 
             var priority = await _context.Priorities
-                .SingleOrDefaultAsync(m => m.PriorityId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (priority == null)
             {
                 return NotFound();
@@ -140,7 +140,7 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var priority = await _context.Priorities.SingleOrDefaultAsync(m => m.PriorityId == id);
+            var priority = await _context.Priorities.SingleOrDefaultAsync(m => m.Id == id);
             _context.Priorities.Remove(priority);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -148,7 +148,7 @@ namespace WebApplication.Areas.Admin.Controllers
 
         private bool PriorityExists(int id)
         {
-            return _context.Priorities.Any(e => e.PriorityId == id);
+            return _context.Priorities.Any(e => e.Id == id);
         }
     }
 }

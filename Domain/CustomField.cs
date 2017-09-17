@@ -8,7 +8,7 @@ namespace Domain
 {
     public class CustomField
     {
-        public int CustomFieldId { get; set; }
+        public int Id { get; set; }
         [Required]
         [MaxLength(30)]
         public string FieldName { get; set; }
@@ -20,5 +20,6 @@ namespace Domain
         public bool IsRequired { get; set; }
 
         public List<CustomFieldValue> CustomFieldValues { get; set; }
+        public List<CustomFieldInTasks> Tasks { get; set; }
     }
 }

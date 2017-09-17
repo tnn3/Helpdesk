@@ -47,10 +47,10 @@ namespace WebApplication.Controllers
             var vm = new ProjectTaskCreateEditViewModel
             {
                 Priorities = new SelectList(await _uow.Priorities.AllAsync(),
-                    nameof(Priority.PriorityId),
+                    nameof(Priority.Id),
                     nameof(Priority.Name)),
                 Statuses = new SelectList(await _uow.Statuses.AllAsync(),
-                    nameof(Status.StatusId),
+                    nameof(Status.Id),
                     nameof(Status.Name))
             };
 
@@ -72,10 +72,10 @@ namespace WebApplication.Controllers
                 return RedirectToAction(nameof(Index));
             }
             vm.Priorities = new SelectList(await _uow.Priorities.AllAsync(),
-                nameof(Priority.PriorityId),
+                nameof(Priority.Id),
                 nameof(Priority.Name));
             vm.Statuses = new SelectList(await _uow.Statuses.AllAsync(),
-                nameof(Status.StatusId),
+                nameof(Status.Id),
                 nameof(Status.Name));
             return View(vm);
         }
@@ -97,10 +97,10 @@ namespace WebApplication.Controllers
             var vm = new ProjectTaskCreateEditViewModel
             {
                 Priorities = new SelectList(await _uow.Priorities.AllAsync(),
-                    nameof(Priority.PriorityId),
+                    nameof(Priority.Id),
                     nameof(Priority.Name)),
                 Statuses = new SelectList(await _uow.Statuses.AllAsync(),
-                    nameof(Status.StatusId),
+                    nameof(Status.Id),
                     nameof(Status.Name)),
                 ProjectTask = projectTask
             };

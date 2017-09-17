@@ -35,7 +35,7 @@ namespace WebApplication.Areas.Admin.Controllers
             }
 
             var status = await _context.Statuses
-                .SingleOrDefaultAsync(m => m.StatusId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (status == null)
             {
                 return NotFound();
@@ -74,7 +74,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var status = await _context.Statuses.SingleOrDefaultAsync(m => m.StatusId == id);
+            var status = await _context.Statuses.SingleOrDefaultAsync(m => m.Id == id);
             if (status == null)
             {
                 return NotFound();
@@ -89,7 +89,7 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("StatusId,Name")] Status status)
         {
-            if (id != status.StatusId)
+            if (id != status.Id)
             {
                 return NotFound();
             }
@@ -103,7 +103,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StatusExists(status.StatusId))
+                    if (!StatusExists(status.Id))
                     {
                         return NotFound();
                     }
@@ -126,7 +126,7 @@ namespace WebApplication.Areas.Admin.Controllers
             }
 
             var status = await _context.Statuses
-                .SingleOrDefaultAsync(m => m.StatusId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (status == null)
             {
                 return NotFound();
@@ -140,7 +140,7 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var status = await _context.Statuses.SingleOrDefaultAsync(m => m.StatusId == id);
+            var status = await _context.Statuses.SingleOrDefaultAsync(m => m.Id == id);
             _context.Statuses.Remove(status);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -148,7 +148,7 @@ namespace WebApplication.Areas.Admin.Controllers
 
         private bool StatusExists(int id)
         {
-            return _context.Statuses.Any(e => e.StatusId == id);
+            return _context.Statuses.Any(e => e.Id == id);
         }
     }
 }

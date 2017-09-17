@@ -7,9 +7,11 @@ namespace Domain
 {
     public class UserTitle
     {
-        public int UserTitleId { get; set; }
+        public int Id { get; set; }
         [Required]
         [MaxLength(30)]
         public string Title { get; set; }
+
+        public List<ApplicationUser> Users { get; set; }
     }
 }

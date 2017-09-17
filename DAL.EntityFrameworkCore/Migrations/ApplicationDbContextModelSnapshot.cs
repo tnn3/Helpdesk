@@ -31,6 +31,8 @@ namespace DAL.EntityFrameworkCore.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<DateTime>("CreatedAt");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
@@ -39,6 +41,8 @@ namespace DAL.EntityFrameworkCore.Migrations
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<DateTime>("ModifiedAt");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256);
@@ -77,7 +81,7 @@ namespace DAL.EntityFrameworkCore.Migrations
 
             modelBuilder.Entity("Domain.Change", b =>
                 {
-                    b.Property<int>("ChangeId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("After");
@@ -86,7 +90,7 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<int>("ChangeSetId");
 
-                    b.HasKey("ChangeId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ChangeSetId");
 
@@ -95,7 +99,7 @@ namespace DAL.EntityFrameworkCore.Migrations
 
             modelBuilder.Entity("Domain.ChangeSet", b =>
                 {
-                    b.Property<int>("ChangeSetId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("ChangerId");
@@ -104,13 +108,23 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<string>("Comment");
 
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("CreatedById");
+
+                    b.Property<DateTime>("ModifiedAt");
+
+                    b.Property<string>("ModifiedById");
+
                     b.Property<int>("ProjectTaskId");
 
-                    b.Property<DateTime>("Time");
-
-                    b.HasKey("ChangeSetId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ChangerId1");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
 
                     b.HasIndex("ProjectTaskId");
 
@@ -119,7 +133,7 @@ namespace DAL.EntityFrameworkCore.Migrations
 
             modelBuilder.Entity("Domain.CustomField", b =>
                 {
-                    b.Property<int>("CustomFieldId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("FieldName")
@@ -137,25 +151,59 @@ namespace DAL.EntityFrameworkCore.Migrations
                     b.Property<string>("PossibleValues")
                         .HasMaxLength(50);
 
-                    b.HasKey("CustomFieldId");
+                    b.HasKey("Id");
 
                     b.ToTable("CustomFields");
                 });
 
-            modelBuilder.Entity("Domain.CustomFieldValue", b =>
+            modelBuilder.Entity("Domain.CustomFieldInTasks", b =>
                 {
-                    b.Property<int>("CustomFieldValueId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("CreatedById");
 
                     b.Property<int>("CustomFieldId");
 
-                    b.Property<string>("FieldValue");
+                    b.Property<DateTime>("ModifiedAt");
+
+                    b.Property<string>("ModifiedById");
 
                     b.Property<int>("ProjectTaskId");
 
-                    b.HasKey("CustomFieldValueId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
 
                     b.HasIndex("CustomFieldId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("ProjectTaskId");
+
+                    b.ToTable("FieldInTasks");
+                });
+
+            modelBuilder.Entity("Domain.CustomFieldValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CustomFieldId");
+
+                    b.Property<int>("CustomFieldInTasksId");
+
+                    b.Property<string>("FieldValue");
+
+                    b.Property<int?>("ProjectTaskId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomFieldId");
+
+                    b.HasIndex("CustomFieldInTasksId");
 
                     b.HasIndex("ProjectTaskId");
 
@@ -164,14 +212,14 @@ namespace DAL.EntityFrameworkCore.Migrations
 
             modelBuilder.Entity("Domain.Priority", b =>
                 {
-                    b.Property<int>("PriorityId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20);
 
-                    b.HasKey("PriorityId");
+                    b.HasKey("Id");
 
                     b.ToTable("Priorities");
                 });
@@ -181,7 +229,21 @@ namespace DAL.EntityFrameworkCore.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("AmountDone");
+
+                    b.Property<string>("ClientEmail");
+
+                    b.Property<string>("ClientName");
+
+                    b.Property<string>("ClientPhone");
+
+                    b.Property<double>("ComponentPrice");
+
                     b.Property<string>("Description");
+
+                    b.Property<bool>("PaidWork");
+
+                    b.Property<double>("Price");
 
                     b.Property<int>("PriorityId");
 
@@ -200,28 +262,58 @@ namespace DAL.EntityFrameworkCore.Migrations
 
             modelBuilder.Entity("Domain.Status", b =>
                 {
-                    b.Property<int>("StatusId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30);
 
-                    b.HasKey("StatusId");
+                    b.HasKey("Id");
 
                     b.ToTable("Statuses");
                 });
 
+            modelBuilder.Entity("Domain.TaskUsers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("CreatedById");
+
+                    b.Property<DateTime>("ModifiedAt");
+
+                    b.Property<string>("ModifiedById");
+
+                    b.Property<int>("TaskId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UsersInTasks");
+                });
+
             modelBuilder.Entity("Domain.UserTitle", b =>
                 {
-                    b.Property<int>("UserTitleId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(30);
 
-                    b.HasKey("UserTitleId");
+                    b.HasKey("Id");
 
                     b.ToTable("UserTitles");
                 });
@@ -336,7 +428,7 @@ namespace DAL.EntityFrameworkCore.Migrations
             modelBuilder.Entity("Domain.ApplicationUser", b =>
                 {
                     b.HasOne("Domain.UserTitle", "Title")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("TitleId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
@@ -356,21 +448,59 @@ namespace DAL.EntityFrameworkCore.Migrations
                         .HasForeignKey("ChangerId1")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Domain.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.ApplicationUser", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Domain.ProjectTask", "ProjectTask")
                         .WithMany("ChangeSets")
                         .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("Domain.CustomFieldInTasks", b =>
+                {
+                    b.HasOne("Domain.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.CustomField", "CustomField")
+                        .WithMany("Tasks")
+                        .HasForeignKey("CustomFieldId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.ApplicationUser", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.ProjectTask", "ProjectTask")
+                        .WithMany("CustomFields")
+                        .HasForeignKey("ProjectTaskId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("Domain.CustomFieldValue", b =>
                 {
-                    b.HasOne("Domain.CustomField", "CustomField")
+                    b.HasOne("Domain.CustomField")
                         .WithMany("CustomFieldValues")
                         .HasForeignKey("CustomFieldId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Domain.ProjectTask", "ProjectTask")
-                        .WithMany("Type")
+                    b.HasOne("Domain.CustomFieldInTasks", "CustomField")
+                        .WithMany("CustomFieldValues")
+                        .HasForeignKey("CustomFieldInTasksId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.ProjectTask")
+                        .WithMany("CustomFieldValues")
                         .HasForeignKey("ProjectTaskId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
@@ -385,6 +515,29 @@ namespace DAL.EntityFrameworkCore.Migrations
                     b.HasOne("Domain.Status", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Domain.TaskUsers", b =>
+                {
+                    b.HasOne("Domain.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.ApplicationUser", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.ProjectTask", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

@@ -63,13 +63,19 @@ namespace DAL.EntityFrameworkCore.Extensions
                     Description = "Mingisugune suits ja imelik lõhn on üleval",
                     Title = "Midagi on katki",
                     Priority = _context.Priorities.First(),
-                    Status = _context.Statuses.First()
+                    Status = _context.Statuses.First(),
+                    AmountDone = 50,
+                    ClientEmail = "keegi@kusagil.ee",
+                    ClientName = "Keegi kusagil",
+                    ClientPhone = "52343534",
+                    ComponentPrice = 25.25,
+                    PaidWork = true,
+                    Price = 45.25,
                 });
                 _context.SaveChanges();
             }
 
             SeedUsers().Wait();
-
         }
 
         private async Task SeedUsers()

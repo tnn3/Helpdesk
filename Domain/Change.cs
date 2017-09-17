@@ -6,7 +6,7 @@ namespace Domain
 {
     public class Change
     {
-        public int ChangeId { get; set; }
+        public int Id { get; set; }
         public string Before { get; set; }
         public string After { get; set; }
 

@@ -35,7 +35,7 @@ namespace WebApplication.Areas.Admin.Controllers
             }
 
             var userTitle = await _context.UserTitles
-                .SingleOrDefaultAsync(m => m.UserTitleId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (userTitle == null)
             {
                 return NotFound();
@@ -74,7 +74,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var userTitle = await _context.UserTitles.SingleOrDefaultAsync(m => m.UserTitleId == id);
+            var userTitle = await _context.UserTitles.SingleOrDefaultAsync(m => m.Id == id);
             if (userTitle == null)
             {
                 return NotFound();
@@ -89,7 +89,7 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UserTitleId,Title")] UserTitle userTitle)
         {
-            if (id != userTitle.UserTitleId)
+            if (id != userTitle.Id)
             {
                 return NotFound();
             }
@@ -103,7 +103,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserTitleExists(userTitle.UserTitleId))
+                    if (!UserTitleExists(userTitle.Id))
                     {
                         return NotFound();
                     }
@@ -126,7 +126,7 @@ namespace WebApplication.Areas.Admin.Controllers
             }
 
             var userTitle = await _context.UserTitles
-                .SingleOrDefaultAsync(m => m.UserTitleId == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (userTitle == null)
             {
                 return NotFound();
@@ -140,7 +140,7 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userTitle = await _context.UserTitles.SingleOrDefaultAsync(m => m.UserTitleId == id);
+            var userTitle = await _context.UserTitles.SingleOrDefaultAsync(m => m.Id == id);
             _context.UserTitles.Remove(userTitle);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -148,7 +148,7 @@ namespace WebApplication.Areas.Admin.Controllers
 
         private bool UserTitleExists(int id)
         {
-            return _context.UserTitles.Any(e => e.UserTitleId == id);
+            return _context.UserTitles.Any(e => e.Id == id);
         }
     }
 }

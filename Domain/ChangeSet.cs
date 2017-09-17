@@ -5,11 +5,10 @@ using System.Text;
 
 namespace Domain
 {
-    public class ChangeSet
+    public class ChangeSet : BaseEntity
     {
-        public int ChangeSetId { get; set; }
+        public int Id { get; set; }
         public string Comment { get; set; }
-        public DateTime Time { get; set; }
 
         public int ProjectTaskId { get; set; }
         public ProjectTask ProjectTask { get; set; }

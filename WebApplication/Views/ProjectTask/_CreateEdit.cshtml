@@ -18,4 +18,41 @@
     <label asp-for="ProjectTask.Status.Name" class="col-md-2 control-label"></label>
     <select asp-for="ProjectTask.StatusId" class="form-control" asp-items="Model.Statuses"></select>
 </div>
+<div class="form-group">
+    <label asp-for="ProjectTask.Price" class="control-label"></label>
+    <input asp-for="ProjectTask.Price" class="form-control" />
+    <span asp-validation-for="ProjectTask.Price" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ProjectTask.ComponentPrice" class="control-label"></label>
+    <input asp-for="ProjectTask.ComponentPrice" class="form-control" />
+    <span asp-validation-for="ProjectTask.ComponentPrice" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <div class="checkbox">
+        <label>
+            <input asp-for="ProjectTask.PaidWork" /> @Html.DisplayNameFor(model => model.ProjectTask.PaidWork)
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="ProjectTask.AmountDone" class="control-label"></label>
+    <input asp-for="ProjectTask.AmountDone" class="form-control" />
+    <span asp-validation-for="ProjectTask.AmountDone" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ProjectTask.ClientName" class="control-label"></label>
+    <input asp-for="ProjectTask.ClientName" class="form-control" />
+    <span asp-validation-for="ProjectTask.ClientName" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ProjectTask.ClientPhone" class="control-label"></label>
+    <input asp-for="ProjectTask.ClientPhone" class="form-control" />
+    <span asp-validation-for="ProjectTask.ClientPhone" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ProjectTask.ClientEmail" class="control-label"></label>
+    <input asp-for="ProjectTask.ClientEmail" class="form-control" />
+    <span asp-validation-for="ProjectTask.ClientEmail" class="text-danger"></span>
+</div>
 

@@ -7,9 +7,10 @@ namespace Domain
 {
     public class Priority
     {
-        public int PriorityId { get; set; }
+        public int Id { get; set; }
         [Required]
         [MaxLength(20)]
+        [Display(Name = "Priority")]
         public string Name { get; set; }
 
         public List<ProjectTask> ProjectTasks { get; set; }

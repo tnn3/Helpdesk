@@ -7,9 +7,10 @@ namespace Domain
 {
     public class Status
     {
-        public int StatusId { get; set; }
+        public int Id { get; set; }
         [Required]
         [MaxLength(30)]
+        [Display(Name = "Status")]
         public string Name { get; set; }
     }
 }

@@ -17,6 +17,8 @@ namespace DAL.EntityFrameworkCore
         public DbSet<Domain.Priority> Priorities { get; set; }
         public DbSet<Domain.Status> Statuses { get; set; }
         public DbSet<Domain.UserTitle> UserTitles { get; set; }
+        public DbSet<Domain.CustomFieldInTasks> FieldInTasks { get; set; }
+        public DbSet<Domain.TaskUsers> UsersInTasks { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
