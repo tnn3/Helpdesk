@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DAL.EntityFrameworkCore;
 using Domain;
+using Interfaces.Base;
 
 namespace WebApplication.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class PriorityController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public PriorityController(ApplicationDbContext context)
+        public PriorityController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: Admin/Priority
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Priorities.ToListAsync());
+            return View(await _uow.Priorities.AllAsync());
         }
 
         // GET: Admin/Priority/Details/5
@@ -34,8 +30,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var priority = await _context.Priorities
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var priority = await _uow.Priorities.FindAsync(id);
             if (priority == null)
             {
                 return NotFound();
@@ -55,12 +50,12 @@ namespace WebApplication.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PriorityId,Name")] Priority priority)
+        public async Task<IActionResult> Create(Priority priority)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(priority);
-                await _context.SaveChangesAsync();
+                _uow.Priorities.Add(priority);
+                await _uow.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(priority);
@@ -74,7 +69,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var priority = await _context.Priorities.SingleOrDefaultAsync(m => m.Id == id);
+            var priority = await _uow.Priorities.FindAsync(id);
             if (priority == null)
             {
                 return NotFound();
@@ -87,34 +82,28 @@ namespace WebApplication.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PriorityId,Name")] Priority priority)
+        public async Task<IActionResult> Edit(int id, Priority priority)
         {
             if (id != priority.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(priority);
+            try
             {
-                try
-                {
-                    _context.Update(priority);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PriorityExists(priority.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _uow.Priorities.Update(priority);
+                await _uow.SaveChangesAsync();
             }
-            return View(priority);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_uow.Priorities.Exists(priority.Id))
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Admin/Priority/Delete/5
@@ -125,8 +114,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var priority = await _context.Priorities
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var priority = await _uow.Priorities.FindAsync(id.Value);
             if (priority == null)
             {
                 return NotFound();
@@ -140,15 +128,10 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var priority = await _context.Priorities.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Priorities.Remove(priority);
-            await _context.SaveChangesAsync();
+            var priority = await _uow.Priorities.FindAsync(id);
+            _uow.Priorities.Remove(priority);
+            await _uow.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PriorityExists(int id)
-        {
-            return _context.Priorities.Any(e => e.Id == id);
         }
     }
 }

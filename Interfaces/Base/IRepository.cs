@@ -14,5 +14,6 @@ namespace Interfaces.Base
         Task AddAsync(TEntity entity);
         TEntity Update(TEntity entity);
         void Remove(TEntity entity);
+        bool Exists(int id);
     }
 }

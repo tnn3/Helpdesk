@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DAL.EntityFrameworkCore;
 using Domain;
+using Interfaces.Base;
 
 namespace WebApplication.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class StatusController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public StatusController(ApplicationDbContext context)
+        public StatusController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: Admin/Status
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Statuses.ToListAsync());
+            return View(await _uow.Statuses.AllAsync());
         }
 
         // GET: Admin/Status/Details/5
@@ -34,8 +30,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var status = await _context.Statuses
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var status = await _uow.Statuses.FindAsync(id);
             if (status == null)
             {
                 return NotFound();
@@ -55,15 +50,13 @@ namespace WebApplication.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StatusId,Name")] Status status)
+        public async Task<IActionResult> Create(Status status)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(status);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(status);
+            if (!ModelState.IsValid) return View(status);
+
+            _uow.Statuses.Add(status);
+            await _uow.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Admin/Status/Edit/5
@@ -74,7 +67,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var status = await _context.Statuses.SingleOrDefaultAsync(m => m.Id == id);
+            var status = await _uow.Statuses.FindAsync(id.Value);
             if (status == null)
             {
                 return NotFound();
@@ -87,34 +80,28 @@ namespace WebApplication.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StatusId,Name")] Status status)
+        public async Task<IActionResult> Edit(int id, Status status)
         {
             if (id != status.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(status);
+            try
             {
-                try
-                {
-                    _context.Update(status);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StatusExists(status.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _uow.Statuses.Update(status);
+                await _uow.SaveChangesAsync();
             }
-            return View(status);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_uow.Statuses.Exists(status.Id))
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Admin/Status/Delete/5
@@ -125,8 +112,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var status = await _context.Statuses
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var status = await _uow.Statuses.FindAsync(id.Value);
             if (status == null)
             {
                 return NotFound();
@@ -140,15 +126,10 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var status = await _context.Statuses.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Statuses.Remove(status);
-            await _context.SaveChangesAsync();
+            var status = await _uow.Statuses.FindAsync(id);
+            _uow.Statuses.Remove(status);
+            await _uow.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool StatusExists(int id)
-        {
-            return _context.Statuses.Any(e => e.Id == id);
         }
     }
 }

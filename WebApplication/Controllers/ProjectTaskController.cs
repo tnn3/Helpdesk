@@ -129,7 +129,7 @@ namespace WebApplication.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectTaskExistsAsync(vm.ProjectTask.Id))
+                    if (!_uow.ProjectTasks.Exists(vm.ProjectTask.Id))
                     {
                         return NotFound();
                     }
@@ -166,11 +166,6 @@ namespace WebApplication.Controllers
             _uow.ProjectTasks.Remove(projectTask);
             await _uow.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProjectTaskExistsAsync(int id)
-        {
-            return _uow.ProjectTasks.Find(id) != null;
         }
     }
 }

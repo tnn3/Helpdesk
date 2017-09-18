@@ -56,5 +56,10 @@ namespace DAL.EntityFrameworkCore.Repositories
             RepositoryDbContext.Entry(entity).State = EntityState.Deleted;
             RepositoryDbSet.Remove(entity);
         }
+
+        public bool Exists(int id)
+        {
+            return RepositoryDbSet.Find(id) != null;
+        }
     }
 }

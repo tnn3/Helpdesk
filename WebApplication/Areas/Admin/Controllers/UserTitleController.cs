@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DAL.EntityFrameworkCore;
 using Domain;
+using Interfaces.Base;
 
 namespace WebApplication.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class UserTitleController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public UserTitleController(ApplicationDbContext context)
+        public UserTitleController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: Admin/UserTitle
         public async Task<IActionResult> Index()
         {
-            return View(await _context.UserTitles.ToListAsync());
+            return View(await _uow.UserTitles.AllAsync());
         }
 
         // GET: Admin/UserTitle/Details/5
@@ -34,8 +30,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var userTitle = await _context.UserTitles
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var userTitle = await _uow.UserTitles.FindAsync(id);
             if (userTitle == null)
             {
                 return NotFound();
@@ -55,15 +50,13 @@ namespace WebApplication.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserTitleId,Title")] UserTitle userTitle)
+        public async Task<IActionResult> Create(UserTitle userTitle)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(userTitle);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(userTitle);
+            if (!ModelState.IsValid) return View(userTitle);
+
+            _uow.UserTitles.Add(userTitle);
+            await _uow.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Admin/UserTitle/Edit/5
@@ -74,7 +67,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var userTitle = await _context.UserTitles.SingleOrDefaultAsync(m => m.Id == id);
+            var userTitle = await _uow.UserTitles.FindAsync(id);
             if (userTitle == null)
             {
                 return NotFound();
@@ -87,34 +80,28 @@ namespace WebApplication.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserTitleId,Title")] UserTitle userTitle)
+        public async Task<IActionResult> Edit(int id, UserTitle userTitle)
         {
             if (id != userTitle.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(userTitle);
+            try
             {
-                try
-                {
-                    _context.Update(userTitle);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserTitleExists(userTitle.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _uow.UserTitles.Update(userTitle);
+                await _uow.SaveChangesAsync();
             }
-            return View(userTitle);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_uow.UserTitles.Exists(id))
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Admin/UserTitle/Delete/5
@@ -125,8 +112,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var userTitle = await _context.UserTitles
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var userTitle = await _uow.UserTitles.FindAsync(id);
             if (userTitle == null)
             {
                 return NotFound();
@@ -140,15 +126,10 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userTitle = await _context.UserTitles.SingleOrDefaultAsync(m => m.Id == id);
-            _context.UserTitles.Remove(userTitle);
-            await _context.SaveChangesAsync();
+            var userTitle = await _uow.UserTitles.FindAsync(id);
+            _uow.UserTitles.Remove(userTitle);
+            await _uow.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool UserTitleExists(int id)
-        {
-            return _context.UserTitles.Any(e => e.Id == id);
         }
     }
 }
