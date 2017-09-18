@@ -16,6 +16,6 @@ namespace Domain
         public int ChangerId { get; set; }
         public ApplicationUser Changer { get; set; }
 
-        public List<Change> Changes { get; set; }
+        public virtual List<Change> Changes { get; set; }
     }
 }

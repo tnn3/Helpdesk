@@ -22,8 +22,8 @@ namespace Domain
         public int StatusId { get; set; }
         public Status Status { get; set; }
 
-        public List<ChangeSet> ChangeSets { get; set; }
-        public List<CustomFieldInTasks> CustomFields { get; set; }
-        public List<CustomFieldValue> CustomFieldValues { get; set; }
+        public virtual List<ChangeSet> ChangeSets { get; set; }
+        public virtual List<CustomFieldInTasks> CustomFields { get; set; }
+        public virtual List<CustomFieldValue> CustomFieldValues { get; set; }
     }
 }

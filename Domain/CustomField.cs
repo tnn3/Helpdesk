@@ -19,7 +19,7 @@ namespace Domain
         public int MaxLength { get; set; }
         public bool IsRequired { get; set; }
 
-        public List<CustomFieldValue> CustomFieldValues { get; set; }
-        public List<CustomFieldInTasks> Tasks { get; set; }
+        public virtual List<CustomFieldValue> CustomFieldValues { get; set; }
+        public virtual List<CustomFieldInTasks> Tasks { get; set; }
     }
 }

@@ -12,6 +12,6 @@ namespace Domain
         [MaxLength(30)]
         public string Title { get; set; }
 
-        public List<ApplicationUser> Users { get; set; }
+        public virtual List<ApplicationUser> Users { get; set; }
     }
 }

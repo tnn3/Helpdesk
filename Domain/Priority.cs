@@ -13,6 +13,6 @@ namespace Domain
         [Display(Name = "Priority")]
         public string Name { get; set; }
 
-        public List<ProjectTask> ProjectTasks { get; set; }
+        public virtual List<ProjectTask> ProjectTasks { get; set; }
     }
 }

@@ -49,9 +49,11 @@
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
-            <h4>Use another service to log in.</h4>
+            <h4>Test users</h4>
             <hr />
-            @{
+            <p>Admin: admin@test.ee - Testing1!</p>
+            <p>User: user@test.ee - Testing1!</p>
+            @*@{
                 var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 if (loginProviders.Count == 0)
                 {
@@ -75,7 +77,7 @@
                         </div>
                     </form>
                 }
-            }
+            }*@
         </section>
     </div>
 </div>

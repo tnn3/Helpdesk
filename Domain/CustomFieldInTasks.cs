@@ -13,6 +13,6 @@ namespace Domain
         public int ProjectTaskId { get; set; }
         public ProjectTask ProjectTask { get; set; }
 
-        public List<CustomFieldValue> CustomFieldValues { get; set; }
+        public virtual List<CustomFieldValue> CustomFieldValues { get; set; }
     }
 }
