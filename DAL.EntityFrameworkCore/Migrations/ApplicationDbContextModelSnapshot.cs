@@ -245,8 +245,7 @@ namespace DAL.EntityFrameworkCore.Migrations
                     b.Property<string>("ClientPhone")
                         .IsRequired();
 
-                    b.Property<double>("ComponentPrice")
-                        .HasMaxLength(1000000);
+                    b.Property<double>("ComponentPrice");
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -261,8 +260,7 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<bool>("PaidWork");
 
-                    b.Property<double>("Price")
-                        .HasMaxLength(10000000);
+                    b.Property<double>("Price");
 
                     b.Property<int>("PriorityId");
 

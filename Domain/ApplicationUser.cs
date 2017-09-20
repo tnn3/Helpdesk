@@ -10,8 +10,10 @@ namespace Domain
     public class ApplicationUser : IdentityUser
     {
         [Display(Name = "Created at")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy HH:mm}")]
         public DateTime CreatedAt { get; set; }
         [Display(Name = "Modified at")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy HH:mm}")]
         public DateTime ModifiedAt { get; set; }
 
         public int? TitleId { get; set; }

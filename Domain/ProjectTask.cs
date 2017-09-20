@@ -12,16 +12,13 @@ namespace Domain
         [MaxLength(500)]
         public string Description { get; set; }
         [Display(Name = "Price")]
-        [MaxLength(10000000)]
-        [MinLength(0)]
         public double Price { get; set; }
         [Display(Name = "Component price")]
-        [MaxLength(1000000)]
-        [MinLength(0)]
         public double ComponentPrice { get; set; }
         [Display(Name = "Paid work")]
         public bool PaidWork { get; set; }
         [Range(0, 100)]
+        [Display(Name = "Amount done")]
         public int AmountDone { get; set; }
         [Display(Name = "Client name")]
         [MaxLength(100)]

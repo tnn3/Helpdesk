@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Interfaces.Base;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApplication.ViewModels;
 
@@ -13,10 +15,12 @@ namespace WebApplication.Controllers
     public class ProjectTaskController : Controller
     {
         private readonly IUnitOfWork _uow;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public ProjectTaskController(IUnitOfWork uow)
+        public ProjectTaskController(IUnitOfWork uow, SignInManager<ApplicationUser> signInManager)
         {
             _uow = uow;
+            _signInManager = signInManager;
         }
 
         // GET: ProjectTask
@@ -67,6 +71,11 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userId = _signInManager.UserManager.GetUserId(User);
+                vm.ProjectTask.CreatedAt = DateTime.Now;
+                vm.ProjectTask.CreatedById = userId;
+                vm.ProjectTask.ModifiedAt = DateTime.Now;
+                vm.ProjectTask.ModifiedById = userId;
                 _uow.ProjectTasks.Add(vm.ProjectTask);
                 await _uow.SaveChangesAsync();
 
