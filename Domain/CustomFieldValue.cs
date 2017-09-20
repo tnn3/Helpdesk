@@ -8,6 +8,7 @@ namespace Domain
     public class CustomFieldValue
     {
         public int Id { get; set; }
+        [MaxLength(100)]
         public string FieldValue { get; set; }
 
         public int CustomFieldInTasksId { get; set; }

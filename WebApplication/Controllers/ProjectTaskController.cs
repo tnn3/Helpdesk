@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Interfaces.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApplication.ViewModels;
 
 namespace WebApplication.Controllers
 {
+    [Authorize(Roles = "Admin, User")]
     public class ProjectTaskController : Controller
     {
         private readonly IUnitOfWork _uow;

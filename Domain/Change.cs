@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Domain
@@ -7,7 +8,9 @@ namespace Domain
     public class Change
     {
         public int Id { get; set; }
+        [MaxLength(200)]
         public string Before { get; set; }
+        [MaxLength(200)]
         public string After { get; set; }
 
         public int ChangeSetId { get; set; }

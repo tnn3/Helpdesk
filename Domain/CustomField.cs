@@ -11,9 +11,11 @@ namespace Domain
         public int Id { get; set; }
         [Required]
         [MaxLength(30)]
+        [Display(Name = "Field name")]
         public string FieldName { get; set; }
         public FieldType FieldType { get; set; }
-        [MaxLength(50)]
+        [MaxLength(100)]
+        [Display(Name = "Possible values")]
         public string PossibleValues { get; set; }
         public int MinLength { get; set; }
         public int MaxLength { get; set; }

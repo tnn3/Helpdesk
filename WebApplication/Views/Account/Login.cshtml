@@ -49,10 +49,18 @@
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
-            <h4>Test users</h4>
+            <h3>Test users</h3>
             <hr />
-            <p>Admin: admin@test.ee - Testing1!</p>
-            <p>User: user@test.ee - Testing1!</p>
+            <div>
+                <h4>Admin</h4>
+                <p>admin@test.ee</p>
+                <p>Testing1!</p>
+            </div>
+            <div>
+                <h4>User</h4>
+                <p>user@test.ee</p>
+                <p>Testing1!</p>
+            </div>
             @*@{
                 var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 if (loginProviders.Count == 0)

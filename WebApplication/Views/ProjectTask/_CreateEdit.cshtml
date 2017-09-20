@@ -11,11 +11,11 @@
     <span asp-validation-for="ProjectTask.Description" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="ProjectTask.Priority.Name" class="col-md-2 control-label"></label>
+    <label asp-for="ProjectTask.Priority.Name" class="control-label"></label>
     <select asp-for="ProjectTask.PriorityId" class="form-control" asp-items="Model.Priorities"></select>
 </div>
 <div class="form-group">
-    <label asp-for="ProjectTask.Status.Name" class="col-md-2 control-label"></label>
+    <label asp-for="ProjectTask.Status.Name" class="control-label"></label>
     <select asp-for="ProjectTask.StatusId" class="form-control" asp-items="Model.Statuses"></select>
 </div>
 <div class="form-group">

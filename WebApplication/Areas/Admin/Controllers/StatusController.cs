@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Interfaces.Base;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class StatusController : Controller
     {
         private readonly IUnitOfWork _uow;

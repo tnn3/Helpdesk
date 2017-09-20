@@ -83,10 +83,10 @@ namespace WebApplication
             {
                 routes.MapRoute(
                     name: "arearoute",
-                    template: "{area:exists}/{controller=ProjectTask}/{action=Index}/{id?}");
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=ProjectTask}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
