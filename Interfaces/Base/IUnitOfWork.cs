@@ -15,12 +15,12 @@ namespace Interfaces.Base
         IChangeRepository Changes { get; }
         ICustomFieldRepository CustomFields { get; }
         IRepository<Status> Statuses { get; }
-        IRepository<ApplicationUser> Users { get; }
         IRepository<ChangeSet> ChangeSets { get; }
         IRepository<CustomFieldValue> CustomFieldValues { get; }
         IRepository<Priority> Priorities { get; }
         IRepository<UserTitle> UserTitles { get; }
         IRepository<CustomFieldInTasks> CustomFieldInTasks { get; }
         IRepository<TaskUsers> TaskUsers { get; }
+        IApplicationUserRepository Users { get; }
     }
 }

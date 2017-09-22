@@ -30,7 +30,8 @@ namespace DAL.EntityFrameworkCore.Helpers
             {
                 {typeof(IProjectTaskRepository), dbContext => new ProjectTaskRepository(dbContext)},
                 {typeof(ICustomFieldRepository), dbContext => new CustomFieldRepository(dbContext)},
-                {typeof(IChangeRepository), dbContext => new ChangeRepository(dbContext)}
+                {typeof(IChangeRepository), dbContext => new ChangeRepository(dbContext)},
+                {typeof(IApplicationUserRepository), dbContext => new ApplicationUserRepository(dbContext)}
             };
         }
 

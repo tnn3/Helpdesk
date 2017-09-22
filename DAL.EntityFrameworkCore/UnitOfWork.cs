@@ -15,12 +15,12 @@ namespace DAL.EntityFrameworkCore
         public IProjectTaskRepository ProjectTasks => GetCustomRepository<IProjectTaskRepository>();
         public IChangeRepository Changes => GetCustomRepository<IChangeRepository>();
         public ICustomFieldRepository CustomFields => GetCustomRepository<ICustomFieldRepository>();
+        public IApplicationUserRepository Users => GetCustomRepository<IApplicationUserRepository>();
 
         public IRepository<Status> Statuses => GetEntityRepository<Status>();
         public IRepository<Priority> Priorities => GetEntityRepository<Priority>();
         public IRepository<UserTitle> UserTitles => GetEntityRepository<UserTitle>();
         public IRepository<ChangeSet> ChangeSets => GetEntityRepository<ChangeSet>();
-        public IRepository<ApplicationUser> Users => GetEntityRepository<ApplicationUser>();
         public IRepository<CustomFieldValue> CustomFieldValues => GetEntityRepository<CustomFieldValue>();
         public IRepository<CustomFieldInTasks> CustomFieldInTasks => GetEntityRepository<CustomFieldInTasks>();
         public IRepository<TaskUsers> TaskUsers => GetEntityRepository<TaskUsers>();

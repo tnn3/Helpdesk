@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Interfaces.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,13 @@ namespace WebApplication.Areas.Admin.Controllers
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUnitOfWork _uow;
 
-        public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IUnitOfWork uow)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _uow = uow;
         }
 
         // GET: /Users/
@@ -183,22 +186,23 @@ namespace WebApplication.Areas.Admin.Controllers
                     return BadRequest();
                 }
 
-                var user = await _userManager.FindByIdAsync(id);
+                var user = await _uow.Users.FindAsync(id);
                 if (user == null)
                 {
                     return NotFound();
                 }
 
-                var userRoles = await _userManager.GetRolesAsync(user);
+                /*var userRoles = await _userManager.GetRolesAsync(user);
                 if (userRoles.Any())
                 {
                     foreach (var userRole in userRoles)
                     {
                         await _userManager.RemoveFromRoleAsync(user, userRole);
                     }
-                }
-
-                await _userManager.DeleteAsync(user);
+                }*/
+                user.IsDisabled = true;
+                await _uow.SaveChangesAsync();
+                //await _userManager.DeleteAsync(user);
                 return RedirectToAction("Index");
             }
             return View();
