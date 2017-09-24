@@ -14,23 +14,27 @@ namespace WebApplication.Controllers
     [Authorize(Roles = "Admin, User")]
     public class ProjectTaskController : Controller
     {
-        private readonly IProjectTaskRepository _uow;
+        private readonly IProjectTaskRepository _projectTaskRepository;
         private readonly IRepository<Status> _statusRepo;
         private readonly IRepository<Priority> _priorityRepo;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public ProjectTaskController(IProjectTaskRepository repo, IRepository<Status> statusRepo, IRepository<Priority> priorityRepo,  SignInManager<ApplicationUser> signInManager)
+        public ProjectTaskController(
+            IProjectTaskRepository projectTaskRepository, 
+            IRepository<Status> statusRepository, 
+            IRepository<Priority> priorityRepository,  
+            SignInManager<ApplicationUser> signInManager)
         {
-            _uow = repo;
+            _projectTaskRepository = projectTaskRepository;
             _signInManager = signInManager;
-            _statusRepo = statusRepo;
-            _priorityRepo = priorityRepo;
+            _statusRepo = statusRepository;
+            _priorityRepo = priorityRepository;
         }
 
         // GET: ProjectTask
         public async Task<IActionResult> Index()
         {
-            return View(await _uow.AllWithReferencesAsync());
+            return View(await _projectTaskRepository.AllWithReferencesAsync());
         }
 
         // GET: ProjectTask/Details/5
@@ -41,7 +45,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _uow.FindWithReferencesAsync(id.Value);
+            var projectTask = await _projectTaskRepository.FindWithReferencesAsync(id.Value);
             if (projectTask == null)
             {
                 return NotFound();
@@ -53,15 +57,8 @@ namespace WebApplication.Controllers
         // GET: ProjectTask/Create
         public async Task<IActionResult> Create()
         {
-            var vm = new ProjectTaskCreateEditViewModel
-            {
-                Priorities = new SelectList(await _priorityRepo.AllAsync(),
-                    nameof(Priority.Id),
-                    nameof(Priority.Name)),
-                Statuses = new SelectList(await _statusRepo.AllAsync(),
-                    nameof(Status.Id),
-                    nameof(Status.Name))
-            };
+            var vm = new ProjectTaskCreateEditViewModel();
+            await PopulateViewModel(vm);
 
             return View(vm);
         }
@@ -80,17 +77,12 @@ namespace WebApplication.Controllers
                 vm.ProjectTask.CreatedById = userId;
                 vm.ProjectTask.ModifiedAt = DateTime.Now;
                 vm.ProjectTask.ModifiedById = userId;
-                _uow.Add(vm.ProjectTask);
-                await _uow.SaveChangesAsync();
+                _projectTaskRepository.Add(vm.ProjectTask);
+                await _projectTaskRepository.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
-            vm.Priorities = new SelectList(await _priorityRepo.AllAsync(),
-                nameof(Priority.Id),
-                nameof(Priority.Name));
-            vm.Statuses = new SelectList(await _statusRepo.AllAsync(),
-                nameof(Status.Id),
-                nameof(Status.Name));
+            await PopulateViewModel(vm);
             return View(vm);
         }
 
@@ -102,22 +94,14 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _uow.FindAsync(id);
+            var projectTask = await _projectTaskRepository.FindAsync(id);
             if (projectTask == null)
             {
                 return NotFound();
             }
 
-            var vm = new ProjectTaskCreateEditViewModel
-            {
-                Priorities = new SelectList(await _priorityRepo.AllAsync(),
-                    nameof(Priority.Id),
-                    nameof(Priority.Name)),
-                Statuses = new SelectList(await _statusRepo.AllAsync(),
-                    nameof(Status.Id),
-                    nameof(Status.Name)),
-                ProjectTask = projectTask
-            };
+            var vm = new ProjectTaskCreateEditViewModel();
+            await PopulateViewModel(vm, projectTask);
 
             return View(vm);
         }
@@ -138,13 +122,13 @@ namespace WebApplication.Controllers
             {
                 try
                 {
-                    _uow.Update(vm.ProjectTask);
+                    _projectTaskRepository.Update(vm.ProjectTask);
 
-                    await _uow.SaveChangesAsync();
+                    await _projectTaskRepository.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_uow.Exists(vm.ProjectTask.Id))
+                    if (!_projectTaskRepository.Exists(vm.ProjectTask.Id))
                     {
                         return NotFound();
                     }
@@ -163,7 +147,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _uow.FindAsync(id);
+            var projectTask = await _projectTaskRepository.FindAsync(id);
             if (projectTask == null)
             {
                 return NotFound();
@@ -177,10 +161,25 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var projectTask = await _uow.FindAsync(id);
-            _uow.Remove(projectTask);
-            await _uow.SaveChangesAsync();
+            var projectTask = await _projectTaskRepository.FindAsync(id);
+            _projectTaskRepository.Remove(projectTask);
+            await _projectTaskRepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task PopulateViewModel(ProjectTaskCreateEditViewModel vm, ProjectTask projectTask = null)
+        {
+            vm.Priorities = new SelectList(await _priorityRepo.AllAsync(),
+                nameof(Priority.Id),
+                nameof(Priority.Name));
+            vm.Statuses = new SelectList(await _statusRepo.AllAsync(),
+                nameof(Status.Id),
+                nameof(Status.Name));
+
+            if (projectTask != null)
+            {
+                vm.ProjectTask = projectTask;
+            }
         }
     }
 }
