@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Interfaces.Base
+namespace Interfaces.Repositories
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity> : IDisposable where TEntity : class
     {
         IEnumerable<TEntity> All();
         Task<IEnumerable<TEntity>> AllAsync();
@@ -15,5 +15,7 @@ namespace Interfaces.Base
         TEntity Update(TEntity entity);
         void Remove(TEntity entity);
         bool Exists(int id);
+        int SaveChanges();
+        Task<int> SaveChangesAsync();
     }
 }

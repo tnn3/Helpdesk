@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
-using Interfaces.Base;
+using Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Areas.Admin.Controllers
@@ -11,17 +11,17 @@ namespace WebApplication.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class StatusController : Controller
     {
-        private readonly IUnitOfWork _uow;
+        private readonly IRepository<Status> _statusRepository;
 
-        public StatusController(IUnitOfWork uow)
-        {
-            _uow = uow;
+        public StatusController(IRepository<Status> statusRepository)
+        {   
+            _statusRepository = statusRepository;
         }
 
         // GET: Admin/Status
         public async Task<IActionResult> Index()
         {
-            return View(await _uow.Statuses.AllAsync());
+            return View(await _statusRepository.AllAsync());
         }
 
         // GET: Admin/Status/Details/5
@@ -32,7 +32,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var status = await _uow.Statuses.FindAsync(id);
+            var status = await _statusRepository.FindAsync(id);
             if (status == null)
             {
                 return NotFound();
@@ -56,8 +56,8 @@ namespace WebApplication.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid) return View(status);
 
-            _uow.Statuses.Add(status);
-            await _uow.SaveChangesAsync();
+            _statusRepository.Add(status);
+            await _statusRepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -69,7 +69,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var status = await _uow.Statuses.FindAsync(id.Value);
+            var status = await _statusRepository.FindAsync(id.Value);
             if (status == null)
             {
                 return NotFound();
@@ -92,12 +92,12 @@ namespace WebApplication.Areas.Admin.Controllers
             if (!ModelState.IsValid) return View(status);
             try
             {
-                _uow.Statuses.Update(status);
-                await _uow.SaveChangesAsync();
+                _statusRepository.Update(status);
+                await _statusRepository.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_uow.Statuses.Exists(status.Id))
+                if (!_statusRepository.Exists(status.Id))
                 {
                     return NotFound();
                 }
@@ -114,7 +114,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var status = await _uow.Statuses.FindAsync(id.Value);
+            var status = await _statusRepository.FindAsync(id.Value);
             if (status == null)
             {
                 return NotFound();
@@ -128,9 +128,9 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var status = await _uow.Statuses.FindAsync(id);
-            _uow.Statuses.Remove(status);
-            await _uow.SaveChangesAsync();
+            var status = await _statusRepository.FindAsync(id);
+            _statusRepository.Remove(status);
+            await _statusRepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

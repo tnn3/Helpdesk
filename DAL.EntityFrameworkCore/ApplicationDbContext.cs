@@ -1,7 +1,7 @@
 ﻿using DAL.EntityFrameworkCore.Extensions;
 using Domain;
+using Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Interfaces.Base;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DAL.EntityFrameworkCore

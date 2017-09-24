@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
-using Interfaces.Base;
+using Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

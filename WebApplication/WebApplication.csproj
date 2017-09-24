@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DAL.EntityFrameworkCore\DAL.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

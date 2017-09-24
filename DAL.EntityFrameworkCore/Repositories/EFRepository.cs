@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Interfaces.Base;
+using Interfaces;
+using Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.EntityFrameworkCore.Repositories
@@ -61,5 +62,55 @@ namespace DAL.EntityFrameworkCore.Repositories
         {
             return RepositoryDbSet.Find(id) != null;
         }
+
+        public int SaveChanges()
+        {
+            CheckDisposed();
+            return RepositoryDbContext.SaveChanges();
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            CheckDisposed();
+            return RepositoryDbContext.SaveChangesAsync();
+        }
+
+        #region IDisposable Implementation
+
+        private bool _isDisposed;
+
+        protected void CheckDisposed()
+        {
+            if (_isDisposed) throw new ObjectDisposedException("The UnitOfWork is already disposed and cannot be used anymore.");
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    if (RepositoryDbContext != null)
+                    {
+                        RepositoryDbContext.Dispose();
+                        RepositoryDbContext = null;
+                    }
+                }
+            }
+            _isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~EFRepository()
+        {
+            Dispose(false);
+        }
+
+        #endregion
     }
 }

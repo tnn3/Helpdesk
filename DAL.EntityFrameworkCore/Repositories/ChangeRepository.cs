@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Domain;
+﻿using Domain;
 using Interfaces;
-using Interfaces.Base;
+using Interfaces.Repositories;
 
 namespace DAL.EntityFrameworkCore.Repositories
 {

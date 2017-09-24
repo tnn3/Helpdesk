@@ -1,4 +1,4 @@
-﻿namespace Interfaces.Base
+﻿namespace Interfaces
 {
     public interface IDbInitializer
     {

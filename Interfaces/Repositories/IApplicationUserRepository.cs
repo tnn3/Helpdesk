@@ -1,7 +1,6 @@
 ﻿using Domain;
-using Interfaces.Base;
 
-namespace Interfaces
+namespace Interfaces.Repositories
 {
     public interface IApplicationUserRepository : IRepository<ApplicationUser>
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
-using Interfaces.Base;
+using Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Areas.Admin.Controllers
@@ -11,17 +11,17 @@ namespace WebApplication.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class PriorityController : Controller
     {
-        private readonly IUnitOfWork _uow;
+        private readonly IRepository<Priority> _priorityRepository;
 
-        public PriorityController(IUnitOfWork uow)
+        public PriorityController(IRepository<Priority> priorityRepository)
         {
-            _uow = uow;
+            _priorityRepository = priorityRepository;
         }
 
         // GET: Admin/Priority
         public async Task<IActionResult> Index()
         {
-            return View(await _uow.Priorities.AllAsync());
+            return View(await _priorityRepository.AllAsync());
         }
 
         // GET: Admin/Priority/Details/5
@@ -32,7 +32,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var priority = await _uow.Priorities.FindAsync(id);
+            var priority = await _priorityRepository.FindAsync(id);
             if (priority == null)
             {
                 return NotFound();
@@ -56,8 +56,8 @@ namespace WebApplication.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _uow.Priorities.Add(priority);
-                await _uow.SaveChangesAsync();
+                _priorityRepository.Add(priority);
+                await _priorityRepository.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(priority);
@@ -71,7 +71,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var priority = await _uow.Priorities.FindAsync(id);
+            var priority = await _priorityRepository.FindAsync(id);
             if (priority == null)
             {
                 return NotFound();
@@ -94,12 +94,12 @@ namespace WebApplication.Areas.Admin.Controllers
             if (!ModelState.IsValid) return View(priority);
             try
             {
-                _uow.Priorities.Update(priority);
-                await _uow.SaveChangesAsync();
+                _priorityRepository.Update(priority);
+                await _priorityRepository.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_uow.Priorities.Exists(priority.Id))
+                if (!_priorityRepository.Exists(priority.Id))
                 {
                     return NotFound();
                 }
@@ -116,7 +116,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var priority = await _uow.Priorities.FindAsync(id.Value);
+            var priority = await _priorityRepository.FindAsync(id.Value);
             if (priority == null)
             {
                 return NotFound();
@@ -130,9 +130,9 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var priority = await _uow.Priorities.FindAsync(id);
-            _uow.Priorities.Remove(priority);
-            await _uow.SaveChangesAsync();
+            var priority = await _priorityRepository.FindAsync(id);
+            _priorityRepository.Remove(priority);
+            await _priorityRepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }
