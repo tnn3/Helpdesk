@@ -29,9 +29,6 @@ namespace Domain
         [Display(Name = "Client email")]
         public string ClientEmail { get; set; }
 
-        public string AssignedToId { get; set; }
-        [Display(Name = "Assigned to")]
-        public ApplicationUser AssignedTo { get; set; }
         [Required]
         public int PriorityId { get; set; }
         public Priority Priority { get; set; }
@@ -39,6 +36,7 @@ namespace Domain
         public int StatusId { get; set; }
         public Status Status { get; set; }
 
+        public virtual List<TaskUsers> UserInTask { get; set; }
         public virtual List<ChangeSet> ChangeSets { get; set; }
         public virtual List<CustomFieldInTasks> CustomFields { get; set; }
         public virtual List<CustomFieldValue> CustomFieldValues { get; set; }
