@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Domain;
-using Interfaces.Base;
+using Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,13 +17,13 @@ namespace WebApplication.Areas.Admin.Controllers
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUnitOfWork _uow;
+        private readonly IApplicationUserRepository _userRepository;
 
-        public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IUnitOfWork uow)
+        public UserController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IApplicationUserRepository userRepository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _uow = uow;
+            _userRepository = userRepository;
         }
 
         // GET: /Users/
@@ -186,7 +186,7 @@ namespace WebApplication.Areas.Admin.Controllers
                     return BadRequest();
                 }
 
-                var user = await _uow.Users.FindAsync(id);
+                var user = await _userRepository.FindAsync(id);
                 if (user == null)
                 {
                     return NotFound();
@@ -201,7 +201,7 @@ namespace WebApplication.Areas.Admin.Controllers
                     }
                 }*/
                 user.IsDisabled = true;
-                await _uow.SaveChangesAsync();
+                await _userRepository.SaveChangesAsync();
                 //await _userManager.DeleteAsync(user);
                 return RedirectToAction("Index");
             }

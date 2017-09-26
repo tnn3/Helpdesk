@@ -12,9 +12,10 @@ using System;
 namespace DAL.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170925141929_RemoveDuplicateChangerChangeSet")]
+    partial class RemoveDuplicateChangerChangeSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,6 +232,8 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<int>("AmountDone");
 
+                    b.Property<string>("AssignedToId");
+
                     b.Property<string>("ClientEmail");
 
                     b.Property<string>("ClientName")
@@ -239,7 +242,7 @@ namespace DAL.EntityFrameworkCore.Migrations
                     b.Property<string>("ClientPhone")
                         .IsRequired();
 
-                    b.Property<decimal>("ComponentPrice");
+                    b.Property<double>("ComponentPrice");
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -254,7 +257,7 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<bool>("PaidWork");
 
-                    b.Property<decimal>("Price");
+                    b.Property<double>("Price");
 
                     b.Property<int>("PriorityId");
 
@@ -265,6 +268,8 @@ namespace DAL.EntityFrameworkCore.Migrations
                         .HasMaxLength(50);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedToId");
 
                     b.HasIndex("CreatedById");
 
@@ -519,6 +524,11 @@ namespace DAL.EntityFrameworkCore.Migrations
 
             modelBuilder.Entity("Domain.ProjectTask", b =>
                 {
+                    b.HasOne("Domain.ApplicationUser", "AssignedTo")
+                        .WithMany()
+                        .HasForeignKey("AssignedToId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Domain.ApplicationUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
@@ -553,7 +563,7 @@ namespace DAL.EntityFrameworkCore.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.ProjectTask", "Task")
-                        .WithMany("UserInTask")
+                        .WithMany()
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Restrict);
 

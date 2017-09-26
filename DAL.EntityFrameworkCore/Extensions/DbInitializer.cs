@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
-using Interfaces.Base;
+using Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -71,9 +71,9 @@ namespace DAL.EntityFrameworkCore.Extensions
                     ClientEmail = "keegi@kusagil.ee",
                     ClientName = "Keegi kusagil",
                     ClientPhone = "52343534",
-                    ComponentPrice = 25.25,
+                    ComponentPrice = 25.25M,
                     PaidWork = true,
-                    Price = 45.25,
+                    Price = 45.25M,
                     //AssignedTo = _context.AppUsers.First(),
                     CreatedAt = DateTime.Now,
                     ModifiedAt = DateTime.Now,

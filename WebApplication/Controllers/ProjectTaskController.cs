@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
-using Interfaces.Base;
+using Interfaces.Repositories;
+using Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,19 +15,27 @@ namespace WebApplication.Controllers
     [Authorize(Roles = "Admin, User")]
     public class ProjectTaskController : Controller
     {
-        private readonly IUnitOfWork _uow;
+        private readonly IBaseService<Status> _statusService;
+        private readonly IBaseService<Priority> _priorityService;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IProjectTaskService _projectTaskService;
 
-        public ProjectTaskController(IUnitOfWork uow, SignInManager<ApplicationUser> signInManager)
+        public ProjectTaskController(
+            IBaseService<Status> statusService,
+            IBaseService<Priority> priorityService,  
+            SignInManager<ApplicationUser> signInManager,
+            IProjectTaskService projectTaskService)
         {
-            _uow = uow;
+            _projectTaskService = projectTaskService;
             _signInManager = signInManager;
+            _statusService = statusService;
+            _priorityService = priorityService;
         }
 
         // GET: ProjectTask
         public async Task<IActionResult> Index()
         {
-            return View(await _uow.ProjectTasks.AllWithReferencesAsync());
+            return View(await _projectTaskService.AllWithReferencesAsync());
         }
 
         // GET: ProjectTask/Details/5
@@ -37,7 +46,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _uow.ProjectTasks.FindWithReferencesAsync(id.Value);
+            var projectTask = await _projectTaskService.FindWithReferencesAsync(id.Value);
             if (projectTask == null)
             {
                 return NotFound();
@@ -49,15 +58,8 @@ namespace WebApplication.Controllers
         // GET: ProjectTask/Create
         public async Task<IActionResult> Create()
         {
-            var vm = new ProjectTaskCreateEditViewModel
-            {
-                Priorities = new SelectList(await _uow.Priorities.AllAsync(),
-                    nameof(Priority.Id),
-                    nameof(Priority.Name)),
-                Statuses = new SelectList(await _uow.Statuses.AllAsync(),
-                    nameof(Status.Id),
-                    nameof(Status.Name))
-            };
+            var vm = new ProjectTaskCreateEditViewModel();
+            await PopulateViewModel(vm);
 
             return View(vm);
         }
@@ -71,22 +73,13 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = _signInManager.UserManager.GetUserId(User);
-                vm.ProjectTask.CreatedAt = DateTime.Now;
-                vm.ProjectTask.CreatedById = userId;
-                vm.ProjectTask.ModifiedAt = DateTime.Now;
-                vm.ProjectTask.ModifiedById = userId;
-                _uow.ProjectTasks.Add(vm.ProjectTask);
-                await _uow.SaveChangesAsync();
+                var signedInUser = _signInManager.UserManager.GetUserAsync(User);
+                await _projectTaskService.AddAsync(vm.ProjectTask, signedInUser.Result);
+                await _projectTaskService.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
-            vm.Priorities = new SelectList(await _uow.Priorities.AllAsync(),
-                nameof(Priority.Id),
-                nameof(Priority.Name));
-            vm.Statuses = new SelectList(await _uow.Statuses.AllAsync(),
-                nameof(Status.Id),
-                nameof(Status.Name));
+            await PopulateViewModel(vm);
             return View(vm);
         }
 
@@ -98,22 +91,14 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _uow.ProjectTasks.FindAsync(id);
+            var projectTask = await _projectTaskService.FindAsync(id);
             if (projectTask == null)
             {
                 return NotFound();
             }
 
-            var vm = new ProjectTaskCreateEditViewModel
-            {
-                Priorities = new SelectList(await _uow.Priorities.AllAsync(),
-                    nameof(Priority.Id),
-                    nameof(Priority.Name)),
-                Statuses = new SelectList(await _uow.Statuses.AllAsync(),
-                    nameof(Status.Id),
-                    nameof(Status.Name)),
-                ProjectTask = projectTask
-            };
+            var vm = new ProjectTaskCreateEditViewModel();
+            await PopulateViewModel(vm, projectTask);
 
             return View(vm);
         }
@@ -134,13 +119,14 @@ namespace WebApplication.Controllers
             {
                 try
                 {
-                    _uow.ProjectTasks.Update(vm.ProjectTask);
+                    var signedInUser = await _signInManager.UserManager.GetUserAsync(User);
+                    _projectTaskService.Update(vm.ProjectTask, signedInUser);
 
-                    await _uow.SaveChangesAsync();
+                    await _projectTaskService.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_uow.ProjectTasks.Exists(vm.ProjectTask.Id))
+                    if (!_projectTaskService.Exists(vm.ProjectTask.Id))
                     {
                         return NotFound();
                     }
@@ -148,6 +134,7 @@ namespace WebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            await PopulateViewModel(vm);
             return View(vm);
         }
 
@@ -159,7 +146,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _uow.ProjectTasks.FindAsync(id);
+            var projectTask = await _projectTaskService.FindAsync(id);
             if (projectTask == null)
             {
                 return NotFound();
@@ -173,10 +160,25 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var projectTask = await _uow.ProjectTasks.FindAsync(id);
-            _uow.ProjectTasks.Remove(projectTask);
-            await _uow.SaveChangesAsync();
+            var projectTask = await _projectTaskService.FindAsync(id);
+            _projectTaskService.Remove(projectTask);
+            await _projectTaskService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task PopulateViewModel(ProjectTaskCreateEditViewModel vm, ProjectTask projectTask = null)
+        {
+            vm.Priorities = new SelectList(await _priorityService.AllAsync(),
+                nameof(Priority.Id),
+                nameof(Priority.Name));
+            vm.Statuses = new SelectList(await _statusService.AllAsync(),
+                nameof(Status.Id),
+                nameof(Status.Name));
+
+            if (projectTask != null)
+            {
+                vm.ProjectTask = projectTask;
+            }
         }
     }
 }

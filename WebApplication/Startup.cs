@@ -6,11 +6,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DAL.EntityFrameworkCore;
 using DAL.EntityFrameworkCore.Extensions;
-using DAL.EntityFrameworkCore.Helpers;
+using DAL.EntityFrameworkCore.Repositories;
 using Domain;
-using Interfaces.Base;
+using Interfaces;
+using Interfaces.Repositories;
+using Interfaces.Services;
 using Microsoft.AspNetCore.HttpOverrides;
-using WebApplication.Services;
+using Services;
 
 namespace WebApplication
 {
@@ -30,17 +32,23 @@ namespace WebApplication
             //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("PostgreSqlConnection")));
-
-            services.AddScoped<IRepositoryProvider, EFRepositoryProvider<IDataContext>>();
-            services.AddSingleton<IRepositoryFactory, EFRepositoryFactory>();
-
             services.AddScoped<IDataContext, ApplicationDbContext>();
-            services.AddScoped<IUnitOfWork, ApplicationUnitOfWork<IDataContext>>();
-
             // Add Database Initializer
             services.AddScoped<IDbInitializer, DbInitializer>();
+
+            services.AddScoped<IProjectTaskRepository, ProjectTaskRepository>();
+            services.AddScoped<IRepository<Status>, EFRepository<Status>>();
+            services.AddScoped<IRepository<Priority>, EFRepository<Priority>>();
+            services.AddScoped<IRepository<UserTitle>, EFRepository<UserTitle>>();
+            services.AddScoped<IRepository<ProjectTask>, EFRepository<ProjectTask>>();
+            services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+
+            services.AddScoped<IProjectTaskService, ProjectTaskService>();
+            services.AddScoped<IBaseService<Status>, BaseService<Status>>();
+            services.AddScoped<IBaseService<Priority>, BaseService<Priority>>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

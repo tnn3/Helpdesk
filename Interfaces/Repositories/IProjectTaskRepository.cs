@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
-using Interfaces.Base;
 
-namespace Interfaces
+namespace Interfaces.Repositories
 {
     public interface IProjectTaskRepository : IRepository<ProjectTask>
     {
         Task<List<ProjectTask>> AllWithReferencesAsync();
         Task<ProjectTask> FindWithReferencesAsync(int id);
+        Task<ProjectTask> FindWithReferencesNoTrackingAsync(int id);
     }
 }

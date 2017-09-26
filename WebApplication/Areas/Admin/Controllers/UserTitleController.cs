@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
-using Interfaces.Base;
+using Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Areas.Admin.Controllers
@@ -11,17 +11,17 @@ namespace WebApplication.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class UserTitleController : Controller
     {
-        private readonly IUnitOfWork _uow;
+        private readonly IRepository<UserTitle> _userTitleRepository;
 
-        public UserTitleController(IUnitOfWork uow)
+        public UserTitleController(IRepository<UserTitle> userTitleRepository)
         {
-            _uow = uow;
+            _userTitleRepository = userTitleRepository;
         }
 
         // GET: Admin/UserTitle
         public async Task<IActionResult> Index()
         {
-            return View(await _uow.UserTitles.AllAsync());
+            return View(await _userTitleRepository.AllAsync());
         }
 
         // GET: Admin/UserTitle/Details/5
@@ -32,7 +32,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var userTitle = await _uow.UserTitles.FindAsync(id);
+            var userTitle = await _userTitleRepository.FindAsync(id);
             if (userTitle == null)
             {
                 return NotFound();
@@ -56,8 +56,8 @@ namespace WebApplication.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid) return View(userTitle);
 
-            _uow.UserTitles.Add(userTitle);
-            await _uow.SaveChangesAsync();
+            _userTitleRepository.Add(userTitle);
+            await _userTitleRepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -69,7 +69,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var userTitle = await _uow.UserTitles.FindAsync(id);
+            var userTitle = await _userTitleRepository.FindAsync(id);
             if (userTitle == null)
             {
                 return NotFound();
@@ -92,12 +92,12 @@ namespace WebApplication.Areas.Admin.Controllers
             if (!ModelState.IsValid) return View(userTitle);
             try
             {
-                _uow.UserTitles.Update(userTitle);
-                await _uow.SaveChangesAsync();
+                _userTitleRepository.Update(userTitle);
+                await _userTitleRepository.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_uow.UserTitles.Exists(id))
+                if (!_userTitleRepository.Exists(id))
                 {
                     return NotFound();
                 }
@@ -114,7 +114,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var userTitle = await _uow.UserTitles.FindAsync(id);
+            var userTitle = await _userTitleRepository.FindAsync(id);
             if (userTitle == null)
             {
                 return NotFound();
@@ -128,9 +128,9 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userTitle = await _uow.UserTitles.FindAsync(id);
-            _uow.UserTitles.Remove(userTitle);
-            await _uow.SaveChangesAsync();
+            var userTitle = await _userTitleRepository.FindAsync(id);
+            _userTitleRepository.Remove(userTitle);
+            await _userTitleRepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

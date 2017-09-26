@@ -15,9 +15,6 @@ namespace Domain
         public int ProjectTaskId { get; set; }
         public ProjectTask ProjectTask { get; set; }
 
-        public int ChangerId { get; set; }
-        public ApplicationUser Changer { get; set; }
-
         public virtual List<Change> Changes { get; set; }
     }
 }
