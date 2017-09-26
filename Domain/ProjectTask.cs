@@ -12,9 +12,9 @@ namespace Domain
         [MaxLength(500)]
         public string Description { get; set; }
         [Display(Name = "Price")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         [Display(Name = "Component price")]
-        public double ComponentPrice { get; set; }
+        public decimal ComponentPrice { get; set; }
         [Display(Name = "Paid work")]
         public bool PaidWork { get; set; }
         [Range(0, 100)]
@@ -29,9 +29,9 @@ namespace Domain
         [Display(Name = "Client email")]
         public string ClientEmail { get; set; }
 
-        public string AssignedToId { get; set; }
+        /*public string AssignedToId { get; set; }
         [Display(Name = "Assigned to")]
-        public ApplicationUser AssignedTo { get; set; }
+        public ApplicationUser AssignedTo { get; set; }*/
         [Required]
         public int PriorityId { get; set; }
         public Priority Priority { get; set; }
@@ -39,8 +39,8 @@ namespace Domain
         public int StatusId { get; set; }
         public Status Status { get; set; }
 
-        public virtual List<ChangeSet> ChangeSets { get; set; }
-        public virtual List<CustomFieldInTasks> CustomFields { get; set; }
-        public virtual List<CustomFieldValue> CustomFieldValues { get; set; }
+        public virtual List<ChangeSet> ChangeSets { get; set; } = new List<ChangeSet>();
+        public virtual List<CustomFieldInTasks> CustomFields { get; set; } = new List<CustomFieldInTasks>();
+        public virtual List<CustomFieldValue> CustomFieldValues { get; set; } = new List<CustomFieldValue>();
     }
 }

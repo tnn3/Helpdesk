@@ -110,7 +110,6 @@ namespace WebApplication.Controllers
         {
             if (!ModelState.IsValid)
             {
-#warning check from other version
                 return View(model);
             }
 

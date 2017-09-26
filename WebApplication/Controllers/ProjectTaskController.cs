@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Interfaces.Repositories;
+using Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,27 +15,27 @@ namespace WebApplication.Controllers
     [Authorize(Roles = "Admin, User")]
     public class ProjectTaskController : Controller
     {
-        private readonly IProjectTaskRepository _projectTaskRepository;
-        private readonly IRepository<Status> _statusRepo;
-        private readonly IRepository<Priority> _priorityRepo;
+        private readonly IBaseService<Status> _statusService;
+        private readonly IBaseService<Priority> _priorityService;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IProjectTaskService _projectTaskService;
 
         public ProjectTaskController(
-            IProjectTaskRepository projectTaskRepository, 
-            IRepository<Status> statusRepository, 
-            IRepository<Priority> priorityRepository,  
-            SignInManager<ApplicationUser> signInManager)
+            IBaseService<Status> statusService,
+            IBaseService<Priority> priorityService,  
+            SignInManager<ApplicationUser> signInManager,
+            IProjectTaskService projectTaskService)
         {
-            _projectTaskRepository = projectTaskRepository;
+            _projectTaskService = projectTaskService;
             _signInManager = signInManager;
-            _statusRepo = statusRepository;
-            _priorityRepo = priorityRepository;
+            _statusService = statusService;
+            _priorityService = priorityService;
         }
 
         // GET: ProjectTask
         public async Task<IActionResult> Index()
         {
-            return View(await _projectTaskRepository.AllWithReferencesAsync());
+            return View(await _projectTaskService.AllWithReferencesAsync());
         }
 
         // GET: ProjectTask/Details/5
@@ -45,7 +46,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _projectTaskRepository.FindWithReferencesAsync(id.Value);
+            var projectTask = await _projectTaskService.FindWithReferencesAsync(id.Value);
             if (projectTask == null)
             {
                 return NotFound();
@@ -72,13 +73,9 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = _signInManager.UserManager.GetUserId(User);
-                vm.ProjectTask.CreatedAt = DateTime.Now;
-                vm.ProjectTask.CreatedById = userId;
-                vm.ProjectTask.ModifiedAt = DateTime.Now;
-                vm.ProjectTask.ModifiedById = userId;
-                _projectTaskRepository.Add(vm.ProjectTask);
-                await _projectTaskRepository.SaveChangesAsync();
+                var signedInUser = _signInManager.UserManager.GetUserAsync(User);
+                await _projectTaskService.AddAsync(vm.ProjectTask, signedInUser.Result);
+                await _projectTaskService.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -94,7 +91,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _projectTaskRepository.FindAsync(id);
+            var projectTask = await _projectTaskService.FindAsync(id);
             if (projectTask == null)
             {
                 return NotFound();
@@ -122,13 +119,14 @@ namespace WebApplication.Controllers
             {
                 try
                 {
-                    _projectTaskRepository.Update(vm.ProjectTask);
+                    var signedInUser = await _signInManager.UserManager.GetUserAsync(User);
+                    _projectTaskService.Update(vm.ProjectTask, signedInUser);
 
-                    await _projectTaskRepository.SaveChangesAsync();
+                    await _projectTaskService.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_projectTaskRepository.Exists(vm.ProjectTask.Id))
+                    if (!_projectTaskService.Exists(vm.ProjectTask.Id))
                     {
                         return NotFound();
                     }
@@ -136,6 +134,7 @@ namespace WebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            await PopulateViewModel(vm);
             return View(vm);
         }
 
@@ -147,7 +146,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _projectTaskRepository.FindAsync(id);
+            var projectTask = await _projectTaskService.FindAsync(id);
             if (projectTask == null)
             {
                 return NotFound();
@@ -161,18 +160,18 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var projectTask = await _projectTaskRepository.FindAsync(id);
-            _projectTaskRepository.Remove(projectTask);
-            await _projectTaskRepository.SaveChangesAsync();
+            var projectTask = await _projectTaskService.FindAsync(id);
+            _projectTaskService.Remove(projectTask);
+            await _projectTaskService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         public async Task PopulateViewModel(ProjectTaskCreateEditViewModel vm, ProjectTask projectTask = null)
         {
-            vm.Priorities = new SelectList(await _priorityRepo.AllAsync(),
+            vm.Priorities = new SelectList(await _priorityService.AllAsync(),
                 nameof(Priority.Id),
                 nameof(Priority.Name));
-            vm.Statuses = new SelectList(await _statusRepo.AllAsync(),
+            vm.Statuses = new SelectList(await _statusService.AllAsync(),
                 nameof(Status.Id),
                 nameof(Status.Name));
 

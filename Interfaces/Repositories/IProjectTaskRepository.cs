@@ -8,5 +8,6 @@ namespace Interfaces.Repositories
     {
         Task<List<ProjectTask>> AllWithReferencesAsync();
         Task<ProjectTask> FindWithReferencesAsync(int id);
+        Task<ProjectTask> FindWithReferencesNoTrackingAsync(int id);
     }
 }

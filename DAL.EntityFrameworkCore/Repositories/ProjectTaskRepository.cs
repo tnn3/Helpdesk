@@ -19,7 +19,7 @@ namespace DAL.EntityFrameworkCore.Repositories
             return RepositoryDbSet
                 .Include(p => p.Status)
                 .Include(p => p.Priority)
-                .Include(p => p.AssignedTo)
+                //.Include(p => p.AssignedTo)
                 .Include(p => p.ChangeSets)
                 .Include(p => p.CustomFieldValues)
                 .Include(p => p.CustomFields)
@@ -31,10 +31,23 @@ namespace DAL.EntityFrameworkCore.Repositories
             return RepositoryDbSet
                 .Include(p => p.Status)
                 .Include(p => p.Priority)
-                .Include(p => p.AssignedTo)
+                //.Include(p => p.AssignedTo)
                 .Include(p => p.ChangeSets)
                 .Include(p => p.CustomFieldValues)
                 .Include(p => p.CustomFields)
+                .SingleOrDefaultAsync(p => p.Id == id);
+        }
+
+        public Task<ProjectTask> FindWithReferencesNoTrackingAsync(int id)
+        {
+            return RepositoryDbSet
+                .Include(p => p.Status)
+                .Include(p => p.Priority)
+                //.Include(p => p.AssignedTo)
+                .Include(p => p.ChangeSets)
+                .Include(p => p.CustomFieldValues)
+                .Include(p => p.CustomFields)
+                .AsNoTracking()
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
     }
