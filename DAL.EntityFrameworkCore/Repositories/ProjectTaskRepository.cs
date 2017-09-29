@@ -45,6 +45,8 @@ namespace DAL.EntityFrameworkCore.Repositories
             return RepositoryDbSet
                 .Include(p => p.Status)
                 .Include(p => p.Priority)
+                .Include(p => p.UserInTask)
+                .ThenInclude(userTask => userTask.User)
                 .Include(p => p.ChangeSets)
                 .Include(p => p.CustomFieldValues)
                 .Include(p => p.CustomFields)

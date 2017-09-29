@@ -32,9 +32,9 @@ namespace Services
         public override Task AddAsync(ProjectTask entity, ApplicationUser signedInUser)
         {
             entity.CreatedAt = DateTime.Now;
-            entity.CreatedBy = signedInUser;
+            entity.CreatedById = signedInUser.Id;
             entity.ModifiedAt = DateTime.Now;
-            entity.ModifiedBy = signedInUser;
+            entity.ModifiedById = signedInUser.Id;
             return base.AddAsync(entity);
         }
 
@@ -43,10 +43,10 @@ namespace Services
             var oldTask = _projectTaskRepository.FindWithReferencesNoTrackingAsync(newTask.Id).Result;
 
             LogChanges(newTask, oldTask, signedInUser);
-            newTask.CreatedBy = oldTask.CreatedBy;
+            newTask.CreatedById = oldTask.CreatedById;
             newTask.CreatedAt = oldTask.CreatedAt;
             newTask.ModifiedAt = DateTime.Now;
-            newTask.ModifiedBy = signedInUser;
+            newTask.ModifiedById = signedInUser.Id;
 
             return base.Update(newTask);
         }
@@ -110,7 +110,7 @@ namespace Services
                     After = newTask.Price.ToString(CultureInfo.InvariantCulture)
                 });
             }
-            if (!newTask.Title.Equals(oldTask.Title))
+            if (newTask.Title != oldTask.Title)
             {
                 changes.Add(new Change
                 {
@@ -118,7 +118,7 @@ namespace Services
                     After = newTask.Title
                 });
             }
-            if (!newTask.Description.Equals(oldTask.Description))
+            if (newTask.Description != oldTask.Description)
             {
                 changes.Add(new Change
                 {
@@ -126,7 +126,7 @@ namespace Services
                     After = newTask.Description
                 });
             }
-            if (!newTask.ClientName.Equals(oldTask.ClientName))
+            if (newTask.ClientName != oldTask.ClientName)
             {
                 changes.Add(new Change
                 {
@@ -134,7 +134,7 @@ namespace Services
                     After = newTask.ClientName
                 });
             }
-            if (!newTask.ClientEmail.Equals(oldTask.ClientEmail))
+            if (newTask.ClientEmail != oldTask.ClientEmail)
             {
                 changes.Add(new Change
                 {
@@ -142,7 +142,7 @@ namespace Services
                     After = newTask.ClientEmail
                 });
             }
-            if (!newTask.ClientPhone.Equals(oldTask.ClientPhone))
+            if (newTask.ClientPhone != oldTask.ClientPhone)
             {
                 changes.Add(new Change
                 {

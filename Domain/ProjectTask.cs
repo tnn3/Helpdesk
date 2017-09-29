@@ -11,8 +11,10 @@ namespace Domain
         public string Title { get; set; }
         [MaxLength(500)]
         public string Description { get; set; }
+        [DataType(DataType.Currency)]
         [Display(Name = "Price")]
         public decimal Price { get; set; }
+        [DataType(DataType.Currency)]
         [Display(Name = "Component price")]
         public decimal ComponentPrice { get; set; }
         [Display(Name = "Paid work")]
