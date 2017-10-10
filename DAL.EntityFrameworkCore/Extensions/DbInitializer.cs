@@ -112,14 +112,28 @@ namespace DAL.EntityFrameworkCore.Extensions
 
             if (!_context.Users.Any())
             {
-                string user = "admin@test.ee";
-                string password = "Testing1!";
-                await _userManager.CreateAsync(new ApplicationUser { UserName = user, Email = user, EmailConfirmed = true }, password);
+                string user = "admin";
+                string password = "Testing1";
+                await _userManager.CreateAsync(new ApplicationUser
+                {
+                    UserName = user,
+                    Email = "admin@test.ee",
+                    EmailConfirmed = true,
+                    Firstname = "Admin",
+                    Lastname = "Test"
+                }, password);
                 await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(user), "Admin");
 
-                user = "user@test.ee";
-                password = "Testing1!";
-                await _userManager.CreateAsync(new ApplicationUser { UserName = user, Email = user, EmailConfirmed = true }, password);
+                user = "user";
+                password = "Testing1";
+                await _userManager.CreateAsync(new ApplicationUser
+                {
+                    UserName = user,
+                    Email = "user@test.ee",
+                    EmailConfirmed = true,
+                    Firstname = "User",
+                    Lastname = "Test"
+                }, password);
                 await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(user), "User");
             }
         }
