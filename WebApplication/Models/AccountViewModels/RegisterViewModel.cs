@@ -9,7 +9,23 @@ namespace WebApplication.Models.AccountViewModels
     public class RegisterViewModel
     {
         [Required]
+        [MaxLength(50)]
+        [Display(Name = "Username")]
+        public string UserName { get; set; }
+
+        [Required]
+        [Display(Name = "First name")]
+        [MaxLength(50)]
+        public string Firstname { get; set; }
+
+        [Required]
+        [Display(Name = "Last name")]
+        [MaxLength(50)]
+        public string Lastname { get; set; }
+
+        [Required]
         [EmailAddress]
+        [MaxLength(50)]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
