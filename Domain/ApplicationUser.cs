@@ -9,10 +9,14 @@ namespace Domain
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        /*[Display(Name = "First name")]
+        [Required]
+        [Display(Name = "First name")]
+        [MaxLength(50)]
         public string Firstname { get; set; }
+        [Required]
         [Display(Name = "Last name")]
-        public string Lastname { get; set; }*/
+        [MaxLength(50)]
+        public string Lastname { get; set; }
 
         [Display(Name = "Created at")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy HH:mm}")]
@@ -25,9 +29,7 @@ namespace Domain
         [Display(Name = "Title")]
         public UserTitle Title { get; set; }
 
-        [Display(Name = "Disabled")]
-        public bool IsDisabled { get; set; }
-
-        //public virtual ICollection<IdentityUserRole<int>> Roles { get; } = new List<IdentityUserRole<int>>();
+        [Display(Name = "Name")]
+        public string FirstLastname => Firstname + " " + Lastname;
     }
 }

@@ -1,4 +1,4 @@
-﻿@model List<Domain.ApplicationUser>
+﻿@model IEnumerable<Domain.ApplicationUser>
 
 @{
     ViewData["Title"] = "Index";
@@ -6,16 +6,24 @@
 
 <h2>Index</h2>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>*@
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.First().UserName)
             </th>
-            <td>@Html.DisplayNameFor(model => model.First().IsDisabled)</td>
+            <th>
+                @Html.DisplayNameFor(model => model.First().FirstLastname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Title.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Email)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -24,7 +32,9 @@
     {
         <tr>
             <td>@Html.DisplayFor(modelItem => item.UserName)</td>
-            <td>@Html.DisplayFor(modelItem => item.IsDisabled)</td>
+            <td>@Html.DisplayFor(modelItem => item.FirstLastname)</td>
+            <td>@Html.DisplayFor(modelItem => item.Title.Title)</td>
+            <td>@Html.DisplayFor(modelItem => item.Email)</td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Details", "Details", new { id = item.Id }) |

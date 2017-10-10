@@ -1,0 +1,30 @@
+﻿@model WebApplication.Areas.Admin.ViewModels.UserCreateEditViewModel
+
+<div class="form-group">
+    <label asp-for="User.Email" class="control-label"></label>
+    <input asp-for="User.Email" class="form-control" />
+    <span asp-validation-for="User.Email" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="User.UserName" class="control-label"></label>
+    <input asp-for="User.UserName" class="form-control" />
+    <span asp-validation-for="User.UserName" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="User.Firstname" class="control-label"></label>
+    <input asp-for="User.Firstname" class="form-control" />
+    <span asp-validation-for="User.Firstname" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="User.Lastname" class="control-label"></label>
+    <input asp-for="User.Lastname" class="form-control" />
+    <span asp-validation-for="User.Lastname" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="User.Title.Title" class="control-label"></label>
+    <select asp-for="User.TitleId" class="form-control" asp-items="Model.TitleSelectList"></select>
+</div>
+<div class="form-group">
+    <label asp-for="RoleId" class="control-label"></label>
+    <select asp-for="RoleId" class="form-control" asp-items="Model.RoleSelectList"></select>
+</div>

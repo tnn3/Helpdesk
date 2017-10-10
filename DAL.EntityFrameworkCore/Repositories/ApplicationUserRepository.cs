@@ -10,10 +10,5 @@ namespace DAL.EntityFrameworkCore.Repositories
         {
             
         }
-
-        public bool IsDisabled(string id)
-        {
-            return RepositoryDbSet.Find(id).IsDisabled;
-        }
     }
 }
