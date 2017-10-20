@@ -12,5 +12,6 @@ namespace WebApplication.ViewModels
         public ProjectTask ProjectTask { get; set; }
         public SelectList Statuses { get; set; }
         public SelectList Priorities { get; set; }
+        public SelectList Assignees { get; set; }
     }
 }

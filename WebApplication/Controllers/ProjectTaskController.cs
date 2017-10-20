@@ -1,9 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
-using Interfaces.Repositories;
 using Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,12 +15,14 @@ namespace WebApplication.Controllers
     {
         private readonly IBaseService<Status> _statusService;
         private readonly IBaseService<Priority> _priorityService;
+        private readonly IBaseService<ApplicationUser> _userService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IProjectTaskService _projectTaskService;
 
         public ProjectTaskController(
             IBaseService<Status> statusService,
             IBaseService<Priority> priorityService,  
+            IBaseService<ApplicationUser> userService,  
             SignInManager<ApplicationUser> signInManager,
             IProjectTaskService projectTaskService)
         {
@@ -30,6 +30,7 @@ namespace WebApplication.Controllers
             _signInManager = signInManager;
             _statusService = statusService;
             _priorityService = priorityService;
+            _userService = userService;
         }
 
         // GET: ProjectTask
@@ -91,7 +92,7 @@ namespace WebApplication.Controllers
                 return NotFound();
             }
 
-            var projectTask = await _projectTaskService.FindAsync(id);
+            var projectTask = await _projectTaskService.FindWithReferencesAsync(id.Value);
             if (projectTask == null)
             {
                 return NotFound();
@@ -174,7 +175,9 @@ namespace WebApplication.Controllers
             vm.Statuses = new SelectList(await _statusService.AllAsync(),
                 nameof(Status.Id),
                 nameof(Status.Name));
-
+            vm.Assignees = new SelectList(await _userService.AllAsync(),
+                nameof(ApplicationUser.Id),
+                nameof(ApplicationUser.FirstLastname));
             if (projectTask != null)
             {
                 vm.ProjectTask = projectTask;

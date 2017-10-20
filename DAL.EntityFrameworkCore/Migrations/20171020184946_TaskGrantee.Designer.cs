@@ -12,9 +12,10 @@ using System;
 namespace DAL.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171020184946_TaskGrantee")]
+    partial class TaskGrantee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,8 +238,6 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<int>("AmountDone");
 
-                    b.Property<string>("AssigneeId");
-
                     b.Property<string>("ClientEmail");
 
                     b.Property<string>("ClientName")
@@ -255,6 +254,8 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(500);
+
+                    b.Property<string>("GranteeId");
 
                     b.Property<DateTime>("ModifiedAt");
 
@@ -274,9 +275,9 @@ namespace DAL.EntityFrameworkCore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssigneeId");
-
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("GranteeId");
 
                     b.HasIndex("ModifiedById");
 
@@ -529,14 +530,14 @@ namespace DAL.EntityFrameworkCore.Migrations
 
             modelBuilder.Entity("Domain.ProjectTask", b =>
                 {
-                    b.HasOne("Domain.ApplicationUser", "Assignee")
-                        .WithMany()
-                        .HasForeignKey("AssigneeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Domain.ApplicationUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.ApplicationUser", "Grantee")
+                        .WithMany()
+                        .HasForeignKey("GranteeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.ApplicationUser", "ModifiedBy")

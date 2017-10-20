@@ -45,11 +45,13 @@ namespace WebApplication
             services.AddScoped<IRepository<Priority>, EFRepository<Priority>>();
             services.AddScoped<IRepository<UserTitle>, EFRepository<UserTitle>>();
             services.AddScoped<IRepository<ProjectTask>, EFRepository<ProjectTask>>();
+            services.AddScoped<IRepository<ApplicationUser>, EFRepository<ApplicationUser>>();
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
 
             services.AddScoped<IProjectTaskService, ProjectTaskService>();
             services.AddScoped<IBaseService<Status>, BaseService<Status>>();
             services.AddScoped<IBaseService<Priority>, BaseService<Priority>>();
+            services.AddScoped<IBaseService<ApplicationUser>, BaseService<ApplicationUser>>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {

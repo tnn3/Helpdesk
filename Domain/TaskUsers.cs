@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Domain
 {
-    public class TaskUsers : BaseEntity
+    public class TaskUser : BaseEntity
     {
         public int Id { get; set; }
 

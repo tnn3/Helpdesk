@@ -19,11 +19,14 @@ namespace DAL.EntityFrameworkCore.Repositories
             return RepositoryDbSet
                 .Include(p => p.Status)
                 .Include(p => p.Priority)
-                .Include(p => p.UserInTask)
+                .Include(p => p.TaskUsers)
                     .ThenInclude(userTask => userTask.User)
+                .Include(p => p.Assignee)
                 .Include(p => p.ChangeSets)
                 .Include(p => p.CustomFieldValues)
                 .Include(p => p.CustomFields)
+                .Include(p => p.TaskUsers)
+                    .ThenInclude(u => u.User)
                 .ToListAsync();
         }
 
@@ -32,11 +35,14 @@ namespace DAL.EntityFrameworkCore.Repositories
             return RepositoryDbSet
                 .Include(p => p.Status)
                 .Include(p => p.Priority)
-                .Include(p => p.UserInTask)
+                .Include(p => p.TaskUsers)
                     .ThenInclude(userTask => userTask.User)
+                .Include(p => p.Assignee)
                 .Include(p => p.ChangeSets)
                 .Include(p => p.CustomFieldValues)
                 .Include(p => p.CustomFields)
+                .Include(p => p.TaskUsers)
+                    .ThenInclude(u => u.User)
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 
@@ -45,11 +51,14 @@ namespace DAL.EntityFrameworkCore.Repositories
             return RepositoryDbSet
                 .Include(p => p.Status)
                 .Include(p => p.Priority)
-                .Include(p => p.UserInTask)
-                .ThenInclude(userTask => userTask.User)
+                .Include(p => p.TaskUsers)
+                    .ThenInclude(userTask => userTask.User)
+                .Include(p => p.Assignee)
                 .Include(p => p.ChangeSets)
                 .Include(p => p.CustomFieldValues)
                 .Include(p => p.CustomFields)
+                .Include(p => p.TaskUsers)
+                    .ThenInclude(u => u.User)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(p => p.Id == id);
         }

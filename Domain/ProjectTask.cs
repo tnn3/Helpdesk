@@ -30,15 +30,17 @@ namespace Domain
         public string ClientPhone { get; set; }
         [Display(Name = "Client email")]
         public string ClientEmail { get; set; }
+        public string AssigneeId { get; set; }
+        public ApplicationUser Assignee { get; set; }
 
         [Required]
         public int PriorityId { get; set; }
-        public Priority Priority { get; set; }
+        public virtual Priority Priority { get; set; }
         [Required]
         public int StatusId { get; set; }
-        public Status Status { get; set; }
+        public virtual Status Status { get; set; }
 
-        public virtual List<TaskUsers> UserInTask { get; set; } = new List<TaskUsers>();
+        public virtual List<TaskUser> TaskUsers { get; set; } = new List<TaskUser>();
         public virtual List<ChangeSet> ChangeSets { get; set; } = new List<ChangeSet>();
         public virtual List<CustomFieldInTasks> CustomFields { get; set; } = new List<CustomFieldInTasks>();
         public virtual List<CustomFieldValue> CustomFieldValues { get; set; } = new List<CustomFieldValue>();

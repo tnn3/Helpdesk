@@ -31,6 +31,7 @@
                 @Html.DisplayNameFor(model => model.ClientName)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Assignee)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ModifiedAt)
@@ -60,6 +61,7 @@
                 @Html.DisplayFor(modelItem => item.ClientName)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Assignee.FirstLastname)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ModifiedAt)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
@@ -74,7 +75,14 @@ namespace DAL.EntityFrameworkCore.Extensions
                     ComponentPrice = 25.25M,
                     PaidWork = true,
                     Price = 45.25M,
-                    //AssignedTo = _context.AppUsers.First(),
+                    Assignee = _context.Users.First(),
+                    TaskUsers = new List<TaskUser>
+                    {
+                       new TaskUser
+                       {
+                           UserId = _context.AppUsers.First().Id
+                       }
+                    },
                     CreatedAt = DateTime.Now,
                     ModifiedAt = DateTime.Now,
                     CreatedBy = _context.AppUsers.First(),
