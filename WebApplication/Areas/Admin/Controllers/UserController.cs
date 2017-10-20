@@ -67,6 +67,13 @@ namespace WebApplication.Areas.Admin.Controllers
                 TitleSelectList = new SelectList(await _titleRepository.AllAsync(), "Id", "Title")
             };
 
+            var userRoles = await _userManager.GetRolesAsync(user);
+            if (userRoles.Any())
+            {
+                var selected = vm.RoleSelectList.First(role => role.Text.Equals(userRoles.First()));
+                selected.Selected = true;
+            }
+
             return View(vm);
         }
 
@@ -129,8 +136,7 @@ namespace WebApplication.Areas.Admin.Controllers
 
                 ModelState.AddModelError("", addRole.Errors.First().ToString());
             }
-
-            vm.RoleSelectList = new SelectList(_roleManager.Roles, "Id", "Name");
+            vm.RoleSelectList = new SelectList(_roleManager.Roles, "Id", "Name", vm.RoleId);
             vm.TitleSelectList = new SelectList(await _titleRepository.AllAsync(), "Id", "Title");
             return View(vm);
         }
