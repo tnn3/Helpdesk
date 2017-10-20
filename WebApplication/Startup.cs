@@ -29,15 +29,9 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
-
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("PostgreSqlConnection")));
             services.AddScoped<IDataContext, ApplicationDbContext>();
-            // Add Database Initializer
             services.AddScoped<IDbInitializer, DbInitializer>();
 
             services.AddScoped<IProjectTaskRepository, ProjectTaskRepository>();
@@ -47,6 +41,7 @@ namespace WebApplication
             services.AddScoped<IRepository<ProjectTask>, EFRepository<ProjectTask>>();
             services.AddScoped<IRepository<ApplicationUser>, EFRepository<ApplicationUser>>();
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+            services.AddScoped<IUserTitleRepository, UserTitleRepository>();
 
             services.AddScoped<IProjectTaskService, ProjectTaskService>();
             services.AddScoped<IBaseService<Status>, BaseService<Status>>();

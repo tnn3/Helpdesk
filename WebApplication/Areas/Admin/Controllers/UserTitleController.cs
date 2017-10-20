@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain;
 using Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApplication.Areas.Admin.Controllers
 {
@@ -11,11 +12,14 @@ namespace WebApplication.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class UserTitleController : Controller
     {
-        private readonly IRepository<UserTitle> _userTitleRepository;
+        private readonly IUserTitleRepository _userTitleRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserTitleController(IRepository<UserTitle> userTitleRepository)
+        public UserTitleController(IUserTitleRepository userTitleRepository, 
+            UserManager<ApplicationUser> userManager)
         {
             _userTitleRepository = userTitleRepository;
+            _userManager = userManager;
         }
 
         // GET: Admin/UserTitle
@@ -32,7 +36,7 @@ namespace WebApplication.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var userTitle = await _userTitleRepository.FindAsync(id);
+            var userTitle = await _userTitleRepository.FindWithReferencesAsync(id.Value);
             if (userTitle == null)
             {
                 return NotFound();
@@ -128,7 +132,10 @@ namespace WebApplication.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userTitle = await _userTitleRepository.FindAsync(id);
+            var userTitle = await _userTitleRepository.FindWithReferencesAsync(id);
+
+            userTitle.Users.ForEach(u => u.TitleId = null);
+
             _userTitleRepository.Remove(userTitle);
             await _userTitleRepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
