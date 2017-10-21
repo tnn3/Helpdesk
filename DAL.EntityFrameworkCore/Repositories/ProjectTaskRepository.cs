@@ -43,6 +43,10 @@ namespace DAL.EntityFrameworkCore.Repositories
                 .Include(p => p.CustomFields)
                 .Include(p => p.TaskUsers)
                     .ThenInclude(u => u.User)
+                .Include(p => p.ChangeSets)
+                    .ThenInclude(p => p.ModifiedBy)
+                .Include(p => p.ChangeSets)
+                    .ThenInclude(cs => cs.Changes)
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 

@@ -17,6 +17,21 @@
             @Html.DisplayFor(model => model.Title)
         </dd>
     </dl>
+
+    <h4>List of users with title</h4>
+    <dl class="dl-horizontal">
+        @if(Model.Users.Any()) { 
+            <dt class="">
+                @Html.DisplayNameFor(model => model.Users.First().FirstLastname)
+            </dt>
+        }
+        @foreach (var item in Model.Users)
+        {
+            <dd>
+                @Html.DisplayFor(modelItem => item.FirstLastname)
+            </dd>
+        }
+    </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |

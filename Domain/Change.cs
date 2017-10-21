@@ -13,6 +13,8 @@ namespace Domain
         [MaxLength(200)]
         public string After { get; set; }
 
+        public string Fieldname { get; set; }
+
         public int ChangeSetId { get; set; }
         public ChangeSet ChangeSet { get; set; }
     }

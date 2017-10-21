@@ -76,7 +76,53 @@
         <dd>
             @Html.DisplayFor(model => model.ClientEmail)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignee)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Assignee.FirstLastname)
+        </dd>
     </dl>
+    <h4>Changes</h4>
+    <hr/>
+    @if (Model.ChangeSets.Any())
+    {
+        <table class="changeSets table-hover">
+        @foreach (var changeSet in Model.ChangeSets)
+        {
+            <thead>
+            <tr class="changeSet ">
+                <th class="changeSetDetails">
+                    @changeSet.ModifiedAt by @changeSet.ModifiedBy.FirstLastname
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr class="changeHeaders">
+                    <th class="changeHeader col-md-6">@Html.DisplayNameFor(model => changeSet.Changes.First().Fieldname)</th>
+                    <th class="changeHeader col-md-3">@Html.DisplayNameFor(model => changeSet.Changes.First().Before)</th>
+                    <th class="changeHeader col-md-3">@Html.DisplayNameFor(model => changeSet.Changes.First().After)</th>
+                </tr>
+                    @foreach (var change in changeSet.Changes)
+                    {<tr>
+                        <td class="col-md-6">@change.Fieldname</td>
+                        <td class="col-md-3">@change.Before</td>
+                        <td class="col-md-3">@change.After</td>
+                     </tr>
+                    }
+                @if (!string.IsNullOrEmpty(changeSet.Comment))
+                {
+                <tr class="changeSetcomment">
+                    <th>@Html.DisplayNameFor(model => changeSet.Comment)</th>
+                </tr>
+                    <tr>
+                        <td>@changeSet.Comment</td>
+                    </tr>
+                }
+            </tbody>
+         }
+     </table>
+    }
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |

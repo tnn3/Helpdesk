@@ -13,6 +13,7 @@ namespace Services
         private readonly IProjectTaskRepository _projectTaskRepository;
         private readonly IRepository<Status> _statusRepository;
         private readonly IRepository<Priority> _priorityRepository;
+        private readonly IRepository<ApplicationUser> _userRepository;
 
         //for unit tests
         public ProjectTaskService()
@@ -22,11 +23,13 @@ namespace Services
 
         public ProjectTaskService(IProjectTaskRepository projectTaskRepository,
             IRepository<Status> statusRepository,
-            IRepository<Priority> priorityRepository) : base(projectTaskRepository)
+            IRepository<Priority> priorityRepository,
+            IRepository<ApplicationUser> userRepository) : base(projectTaskRepository)
         {
             _projectTaskRepository = projectTaskRepository;
             _priorityRepository = priorityRepository;
             _statusRepository = statusRepository;
+            _userRepository = userRepository;
         }
 
         public override Task AddAsync(ProjectTask entity, ApplicationUser signedInUser)
@@ -41,7 +44,12 @@ namespace Services
         public override ProjectTask Update(ProjectTask newTask, ApplicationUser signedInUser)
         {
             var oldTask = _projectTaskRepository.FindWithReferencesNoTrackingAsync(newTask.Id).Result;
-
+            if (newTask.AssigneeId == null)
+            {
+                newTask.Assignee = _userRepository.Find(newTask.AssigneeId);
+            }
+            newTask.Status = _statusRepository.Find(newTask.StatusId);
+            newTask.Priority = _priorityRepository.Find(newTask.PriorityId);
             LogChanges(newTask, oldTask, signedInUser);
             newTask.CreatedById = oldTask.CreatedById;
             newTask.CreatedAt = oldTask.CreatedAt;
@@ -74,16 +82,17 @@ namespace Services
                 changes.Add(new Change
                 {
                     Before = oldTask.PaidWork.ToString(),
-                    After = newTask.PaidWork.ToString()
-                });
+                    After = newTask.PaidWork.ToString(),
+                    Fieldname = nameof(oldTask.PaidWork)
+            });
             }
             if (newTask.PriorityId != oldTask.PriorityId)
             {
-                var priority = _priorityRepository.Find(newTask.PriorityId);
                 changes.Add(new Change
                 {
                     Before = oldTask.Priority.Name,
-                    After = priority.Name
+                    After = newTask.Priority.Name,
+                    Fieldname = nameof(oldTask.Priority)
                 });
             }
             if (newTask.AmountDone != oldTask.AmountDone)
@@ -91,7 +100,8 @@ namespace Services
                 changes.Add(new Change
                 {
                     Before = oldTask.AmountDone.ToString(),
-                    After = newTask.AmountDone.ToString()
+                    After = newTask.AmountDone.ToString(),
+                    Fieldname = nameof(oldTask.AmountDone)
                 });
             }
             if (newTask.ComponentPrice != oldTask.ComponentPrice)
@@ -99,7 +109,8 @@ namespace Services
                 changes.Add(new Change
                 {
                     Before = oldTask.ComponentPrice.ToString(CultureInfo.InvariantCulture),
-                    After = newTask.ComponentPrice.ToString(CultureInfo.InvariantCulture)
+                    After = newTask.ComponentPrice.ToString(CultureInfo.InvariantCulture),
+                    Fieldname = nameof(oldTask.ComponentPrice)
                 });
             }
             if (newTask.Price != oldTask.Price)
@@ -107,7 +118,8 @@ namespace Services
                 changes.Add(new Change
                 {
                     Before = oldTask.Price.ToString(CultureInfo.InvariantCulture),
-                    After = newTask.Price.ToString(CultureInfo.InvariantCulture)
+                    After = newTask.Price.ToString(CultureInfo.InvariantCulture),
+                    Fieldname = nameof(oldTask.Price)
                 });
             }
             if (newTask.Title != oldTask.Title)
@@ -115,7 +127,8 @@ namespace Services
                 changes.Add(new Change
                 {
                     Before = oldTask.Title,
-                    After = newTask.Title
+                    After = newTask.Title,
+                    Fieldname = nameof(oldTask.Title)
                 });
             }
             if (newTask.Description != oldTask.Description)
@@ -123,7 +136,8 @@ namespace Services
                 changes.Add(new Change
                 {
                     Before = oldTask.Description,
-                    After = newTask.Description
+                    After = newTask.Description,
+                    Fieldname = nameof(oldTask.Description)
                 });
             }
             if (newTask.ClientName != oldTask.ClientName)
@@ -131,7 +145,8 @@ namespace Services
                 changes.Add(new Change
                 {
                     Before = oldTask.ClientName,
-                    After = newTask.ClientName
+                    After = newTask.ClientName,
+                    Fieldname = nameof(oldTask.ClientName)
                 });
             }
             if (newTask.ClientEmail != oldTask.ClientEmail)
@@ -139,7 +154,8 @@ namespace Services
                 changes.Add(new Change
                 {
                     Before = oldTask.ClientEmail,
-                    After = newTask.ClientEmail
+                    After = newTask.ClientEmail,
+                    Fieldname = nameof(oldTask.ClientEmail)
                 });
             }
             if (newTask.ClientPhone != oldTask.ClientPhone)
@@ -147,20 +163,28 @@ namespace Services
                 changes.Add(new Change
                 {
                     Before = oldTask.ClientPhone,
-                    After = newTask.ClientPhone
+                    After = newTask.ClientPhone,
+                    Fieldname = nameof(oldTask.ClientPhone)
                 });
             }
             if (newTask.StatusId != oldTask.StatusId)
             {
-                var status = _statusRepository.Find(newTask.StatusId);
                 changes.Add(new Change
                 {
                     Before = oldTask.Status.Name,
-                    After = status.Name
+                    After = newTask.Status.Name,
+                    Fieldname = nameof(oldTask.Status)
                 });
             }
 
-            //add assignee logging
+            if (newTask.AssigneeId != oldTask.AssigneeId)
+            {
+                changes.Add(new Change
+                {
+                    Before = oldTask.Assignee.FirstLastname,
+                    After = newTask.Assignee.FirstLastname
+                });
+            }
 
             if (changes.Count > 0)
             {
