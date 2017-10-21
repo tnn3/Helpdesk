@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
@@ -27,9 +28,11 @@ namespace WebApplication.Controllers
             var vm = new HomeViewModel();
             if (!User.Identity.IsAuthenticated) return View(vm);
             var user = await _userManager.GetUserAsync(User);
+            vm.User = user;
+            if (user.LoggedIn.Equals(DateTime.MinValue)) return View(vm);
+
             var tasks = await _projectTaskService.AllBefore(user.LoggedIn.AddDays(-2));
             vm.Tasks = tasks.OrderByDescending(t => t.ModifiedAt);
-            vm.User = user;
             return View(vm);
         }
 

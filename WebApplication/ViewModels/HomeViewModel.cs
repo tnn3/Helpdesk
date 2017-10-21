@@ -5,7 +5,7 @@ namespace WebApplication.ViewModels
 {
     public class HomeViewModel
     {
-        public IEnumerable<ProjectTask> Tasks { get; set; }
+        public IEnumerable<ProjectTask> Tasks { get; set; } = new List<ProjectTask>();
         public ApplicationUser User { get; set; }
     }
 }
