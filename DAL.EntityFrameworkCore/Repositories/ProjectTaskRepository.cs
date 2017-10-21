@@ -72,7 +72,7 @@ namespace DAL.EntityFrameworkCore.Repositories
         public Task<List<ProjectTask>> AllBefore(DateTime dateTime)
         {
             return RepositoryDbSet
-                .Where(p => p.ModifiedAt < dateTime)
+                .Where(p => p.ModifiedAt > dateTime)
                 .ToListAsync();
         }
     }

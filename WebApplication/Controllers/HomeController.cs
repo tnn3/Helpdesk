@@ -25,12 +25,11 @@ namespace WebApplication.Controllers
         public async Task<IActionResult> Index()
         {
             var vm = new HomeViewModel();
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = await _userManager.GetUserAsync(User);
-                var tasks = await _projectTaskService.AllBefore(user.LoggedIn.AddDays(-2));
-                vm.Tasks = tasks.OrderByDescending(t => t.ModifiedAt);
-            }
+            if (!User.Identity.IsAuthenticated) return View(vm);
+            var user = await _userManager.GetUserAsync(User);
+            var tasks = await _projectTaskService.AllBefore(user.LoggedIn.AddDays(-2));
+            vm.Tasks = tasks.OrderByDescending(t => t.ModifiedAt);
+            vm.User = user;
             return View(vm);
         }
 

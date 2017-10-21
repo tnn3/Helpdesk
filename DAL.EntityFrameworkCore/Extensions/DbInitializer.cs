@@ -83,8 +83,8 @@ namespace DAL.EntityFrameworkCore.Extensions
                            UserId = _context.AppUsers.First().Id
                        }
                     },
-                    CreatedAt = DateTime.Now.AddDays(-2),
-                    ModifiedAt = DateTime.Now.AddDays(-2),
+                    CreatedAt = DateTime.Now.AddDays(-5),
+                    ModifiedAt = DateTime.Now.AddDays(-5),
                     CreatedBy = _context.AppUsers.First(),
                     ModifiedBy = _context.AppUsers.First()
                 });

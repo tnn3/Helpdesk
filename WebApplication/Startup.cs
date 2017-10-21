@@ -90,10 +90,10 @@ namespace WebApplication
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            var cultureInfo = new CultureInfo("en-US") {NumberFormat = {CurrencySymbol = "€"}};
+            //var cultureInfo = new CultureInfo("et-ee");
 
-            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+            //CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            //CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             app.UseAuthentication();
 

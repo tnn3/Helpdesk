@@ -76,7 +76,7 @@ namespace Services
 
         public Task<List<ProjectTask>> AllBefore(DateTime dateTime)
         {
-            return _projectTaskRepository.AllBefore(DateTime.Now);
+            return _projectTaskRepository.AllBefore(dateTime);
         }
 
         public void LogChanges(ProjectTask newTask, ProjectTask oldTask, ApplicationUser signedInUser)

@@ -13,7 +13,7 @@
     <div>
         @foreach (var task in Model.Tasks)
         {
-            <p>@Html.ActionLink(task.Title, "Details", "ProjectTask", new { task.Id })</p>
+            <p>@Html.ActionLink(task.Title, "Details", "ProjectTask", new { task.Id }) - @task.ModifiedAt</p>
         }
     </div>
 }
