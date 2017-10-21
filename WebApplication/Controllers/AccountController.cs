@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Domain;
@@ -61,6 +62,9 @@ namespace WebApplication.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var user = _userManager.Users.First(u => u.UserName.Equals(model.Username));
+                    user.LoggedIn = DateTime.Now;
+                    await _userManager.UpdateAsync(user);
                     _logger.LogInformation("User logged in.");
                     return RedirectToLocal(returnUrl);
                 }
@@ -73,14 +77,9 @@ namespace WebApplication.Controllers
                     _logger.LogWarning("User account locked out.");
                     return RedirectToAction(nameof(Lockout));
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
-                }
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
             }
-
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 

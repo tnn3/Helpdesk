@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
 
@@ -11,5 +12,6 @@ namespace Interfaces.Services
         Task<List<ProjectTask>> AllWithReferencesAsync();
         Task<ProjectTask> FindWithReferencesAsync(int id);
         Task<ProjectTask> FindWithReferencesNoTrackingAsync(int id);
+        Task<List<ProjectTask>> AllBefore(DateTime dateTime);
     }
 }

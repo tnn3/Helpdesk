@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace Domain
@@ -24,6 +22,7 @@ namespace Domain
         [Display(Name = "Modified at")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy HH:mm}")]
         public DateTime ModifiedAt { get; set; }
+        public DateTime LoggedIn { get; set; }
 
         public int? TitleId { get; set; }
         [Display(Name = "Title")]

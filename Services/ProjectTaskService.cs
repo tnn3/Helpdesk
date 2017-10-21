@@ -74,6 +74,11 @@ namespace Services
             return _projectTaskRepository.FindWithReferencesNoTrackingAsync(id);
         }
 
+        public Task<List<ProjectTask>> AllBefore(DateTime dateTime)
+        {
+            return _projectTaskRepository.AllBefore(DateTime.Now);
+        }
+
         public void LogChanges(ProjectTask newTask, ProjectTask oldTask, ApplicationUser signedInUser)
         {
             var changes = new List<Change>();
@@ -84,7 +89,7 @@ namespace Services
                     Before = oldTask.PaidWork.ToString(),
                     After = newTask.PaidWork.ToString(),
                     Fieldname = nameof(oldTask.PaidWork)
-            });
+                });
             }
             if (newTask.PriorityId != oldTask.PriorityId)
             {

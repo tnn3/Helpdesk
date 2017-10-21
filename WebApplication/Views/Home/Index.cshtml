@@ -1,7 +1,21 @@
-﻿@{
+﻿@model WebApplication.ViewModels.HomeViewModel
+
+@{
     ViewData["Title"] = "Home";
 }
 
 <h2>Helpdesk</h2>
 <p>Some description of system?</p>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <h3>Recent changes to tasks:</h3>
+    <div>
+        @foreach (var task in Model.Tasks)
+        {
+            <p>@Html.ActionLink(task.Title, "Details", "ProjectTask", new { task.Id })</p>
+        }
+    </div>
+}
+
 

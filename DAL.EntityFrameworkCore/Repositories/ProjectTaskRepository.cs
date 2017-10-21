@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Interfaces;
@@ -65,6 +67,13 @@ namespace DAL.EntityFrameworkCore.Repositories
                     .ThenInclude(u => u.User)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(p => p.Id == id);
+        }
+
+        public Task<List<ProjectTask>> AllBefore(DateTime dateTime)
+        {
+            return RepositoryDbSet
+                .Where(p => p.ModifiedAt < dateTime)
+                .ToListAsync();
         }
     }
 }
