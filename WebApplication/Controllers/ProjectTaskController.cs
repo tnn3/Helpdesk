@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain;
@@ -6,7 +7,9 @@ using Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WebApplication.Extensions;
 using WebApplication.ViewModels;
+using System.Collections.Generic;
 
 namespace WebApplication.Controllers
 {
@@ -34,9 +37,30 @@ namespace WebApplication.Controllers
         }
 
         // GET: ProjectTask
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            return View(await _projectTaskService.AllWithReferencesAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["SortId"] = string.IsNullOrEmpty(sortOrder) ? "IdDesc" : "";
+            ViewData["SortStatus"] = sortOrder == "Status" ? "StatusDesc" : "Status";
+            ViewData["SortDone"] = sortOrder == "AmountDone" ? "AmountDoneDesc" : "AmountDone";
+            ViewData["SortPriority"] = sortOrder == "Priority" ? "PriorityDesc" : "Priority";
+            ViewData["SortTitle"] = sortOrder == "Title" ? "TitleDesc" : "Title";
+            ViewData["SortClient"] = sortOrder == "ClientName" ? "ClientNameDesc" : "ClientName";
+            ViewData["SortAssignee"] = sortOrder == "Assignee" ? "AssigneeDesc" : "Assignee";
+            ViewData["SortModifiedAt"] = sortOrder == "ModifiedAt" ? "ModifiedAtDesc" : "ModifiedAt";
+
+            if (searchString == null) searchString = currentFilter;
+            else page = 1;
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var tasks = await _projectTaskService.AllWithReferencesAsync();
+            tasks = SearchTasks(tasks, searchString);
+            tasks = SortTasks(tasks, sortOrder);
+
+            var pageSize = 10;
+
+            return View(PaginatedList<ProjectTask>.Create(tasks, page ?? 1, pageSize));
         }
 
         // GET: ProjectTask/Details/5
@@ -167,7 +191,7 @@ namespace WebApplication.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task PopulateViewModel(ProjectTaskCreateEditViewModel vm, ProjectTask projectTask = null)
+        private async Task PopulateViewModel(ProjectTaskCreateEditViewModel vm, ProjectTask projectTask = null)
         {
             vm.Priorities = new SelectList(await _priorityService.AllAsync(),
                 nameof(Priority.Id),
@@ -182,6 +206,77 @@ namespace WebApplication.Controllers
             {
                 vm.ProjectTask = projectTask;
             }
+        }
+
+        private static List<ProjectTask> SortTasks(List<ProjectTask> tasks, string sortBy)
+        {
+            switch (sortBy)
+            {
+                case "IdDesc":
+                    tasks = tasks.OrderByDescending(t => t.Id).ToList();
+                    break;
+                case "Status":
+                    tasks = tasks.OrderBy(t => t.Status.Name).ToList();
+                    break;
+                case "StatusDesc":
+                    tasks = tasks.OrderByDescending(t => t.Status.Name).ToList();
+                    break;
+                case "AmountDone":
+                    tasks = tasks.OrderBy(t => t.AmountDone).ToList();
+                    break;
+                case "AmountDoneDesc":
+                    tasks = tasks.OrderByDescending(t => t.AmountDone).ToList();
+                    break;
+                case "Priority":
+                    tasks = tasks.OrderBy(t => t.Priority.Name).ToList();
+                    break;
+                case "PriorityDesc":
+                    tasks = tasks.OrderByDescending(t => t.Priority.Name).ToList();
+                    break;
+                case "Title":
+                    tasks = tasks.OrderBy(t => t.Title).ToList();
+                    break;
+                case "TitleDesc":
+                    tasks = tasks.OrderByDescending(t => t.Title).ToList();
+                    break;
+                case "ClientName":
+                    tasks = tasks.OrderBy(t => t.ClientName).ToList();
+                    break;
+                case "ClientNameDesc":
+                    tasks = tasks.OrderByDescending(t => t.ClientName).ToList();
+                    break;
+                case "Assignee":
+                    tasks = tasks.OrderBy(t => t.Assignee).ToList();
+                    break;
+                case "AssigneeDesc":
+                    tasks = tasks.OrderByDescending(t => t.Assignee).ToList();
+                    break;
+                case "ModifiedAt":
+                    tasks = tasks.OrderBy(t => t.ModifiedAt).ToList();
+                    break;
+                case "ModifiedAtDesc":
+                    tasks = tasks.OrderByDescending(t => t.ModifiedAt).ToList();
+                    break;
+                default:
+                    tasks = tasks.OrderBy(t => t.Id).ToList();
+                    break;
+            }
+            return tasks;
+        }
+
+        private static List<ProjectTask> SearchTasks(List<ProjectTask> tasks, string searchString)
+        {
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                tasks = tasks.Where(t => t.Title.ToLower().Contains(searchString)
+                                         || t.Description.ToLower().Contains(searchString)
+                                         || t.ClientName.ToLower().Contains(searchString)
+                                         || t.ClientPhone.Contains(searchString)
+                                         || t.ClientEmail.Contains(searchString)
+                ).ToList();
+            }
+
+            return tasks;
         }
     }
 }

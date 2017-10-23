@@ -90,10 +90,17 @@ namespace WebApplication
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            //var cultureInfo = new CultureInfo("et-ee");
+            var cultureInfo = new CultureInfo("et-ee")
+            {
+                NumberFormat =
+                {
+                    CurrencyDecimalSeparator = ".",
+                    NumberDecimalSeparator = "."
+                }
+            };
 
-            //CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-            //CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             app.UseAuthentication();
 

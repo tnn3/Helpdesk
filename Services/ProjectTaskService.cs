@@ -44,7 +44,7 @@ namespace Services
         public override ProjectTask Update(ProjectTask newTask, ApplicationUser signedInUser)
         {
             var oldTask = _projectTaskRepository.FindWithReferencesNoTrackingAsync(newTask.Id).Result;
-            if (newTask.AssigneeId == null)
+            if (newTask.AssigneeId != null)
             {
                 newTask.Assignee = _userRepository.Find(newTask.AssigneeId);
             }
